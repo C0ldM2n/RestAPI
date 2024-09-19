@@ -46,6 +46,7 @@ def test_app(db_session: AsyncSession) -> FastAPI:
     app.dependency_overrides[get_async_session] = lambda: db_session
     return app
 
+
 # SETUP
 @pytest.fixture(scope='session')
 def event_loop(request):
@@ -53,6 +54,7 @@ def event_loop(request):
     loop = asyncio.get_event_loop_policy().new_event_loop()
     yield loop
     loop.close()
+
 
 @pytest.fixture(scope="session")
 def anyio_backend():

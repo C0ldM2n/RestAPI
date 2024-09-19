@@ -5,7 +5,8 @@ from countries.models import Country
 
 from core.db import Base
 
-
-__all__ = ["Base",
-           "Product", "Brand",
-           "Category", "Country"]
+__all__ = [
+    "Base",
+    "Product", "Brand",
+    "Category", "Country"
+]

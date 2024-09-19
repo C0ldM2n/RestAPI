@@ -2,6 +2,7 @@ import os
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
+
 class Settings(BaseSettings):
     APP_NAME: str = 'REST API'
     BASE_DIR: str = str(os.path.dirname(os.path.abspath(__file__)))
@@ -17,8 +18,7 @@ class Settings(BaseSettings):
     POSTGRES_HOST: str
     POSTGRES_PORT: str
 
-    model_config = SettingsConfigDict(env_file = os.path.join(BASE_DIR, '.env'), env_file_encoding='utf-8')
-    # env_file = '.env'
+    model_config = SettingsConfigDict(env_file=os.path.join(BASE_DIR, '.env'), env_file_encoding='utf-8')
 
     @property
     def db_url(self):

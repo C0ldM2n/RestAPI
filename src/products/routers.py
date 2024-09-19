@@ -1,58 +1,14 @@
 from fastapi import APIRouter, Depends
-
-from sqlalchemy.future import select
 from sqlalchemy.ext.asyncio import AsyncSession
+from fastapi import HTTPException
 
 from core.db.database import get_async_session
 
-from products.models import Product
-from brands.models import Brand
 from products.schemas import ProductPydantic
 from products.crud import save_product_to_db, get_product_from_db
 
-router = APIRouter(
-    prefix="/products",
-    tags=["Products"]
-)
+router = APIRouter()
 
-
-# @router.get("/get_products")
-# async def get_products(session: AsyncSession = Depends(get_async_session)):
-#     query = select(Product)
-#
-#     # print(session)
-#     print(query)
-#     execute = await session.execute(query)
-#
-#     result = execute.scalars().all()
-#     return result
-#
-#
-# @router.get("/get_products_by_brand/{brand_name}")
-# async def get_products_by_brand(brand_name: str = None, session: AsyncSession = Depends(get_async_session)):
-#     query = (select(Product.id, Product.name, Product.price, Brand.name.label('brand'))
-#              .join(Brand, Product.brand_id == Brand.id)) # noqa
-#
-#     if brand_name:
-#         query = query.where(Brand.name == brand_name)
-#
-#     print(query)
-#     execute = await session.execute(query)
-#
-#     result = execute.fetchall()
-#     return [
-#         {
-#             "id": row[0],
-#             "name": row[1],
-#             "price": row[2],
-#             "brand": row[3]
-#         }
-#         for row in result
-#     ]
-
-
-# for tests
-from fastapi import HTTPException
 
 @router.post("/", response_model=ProductPydantic)
 async def create_product(product: ProductPydantic, session: AsyncSession = Depends(get_async_session)):

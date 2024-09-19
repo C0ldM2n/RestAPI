@@ -4,3 +4,32 @@ pythonpath = [
 ]
 asyncio_mode="auto"
 asyncio_default_fixture_loop_scope="function"
+
+[tool.poetry]
+name = "Product API"
+version = "0.1.0"
+description = ""
+authors = ["kostya12362", "coldman"]
+
+[tool.poetry.dependencies]
+python = "^3.12"
+fastapi = {extras = ["full"], version = "*"}
+alembic = "*"
+sqlalchemy = "*"
+uvicorn = "*"
+pydantic-settings = "*"
+asyncpg = "*"
+httpx = "*"
+fastapi-cli = "*"
+python-dotenv = "*"
+asyncio = "*"
+greenlet = "*"
+
+[tool.poetry.dev-dependencies]
+pytest = "*"
+pytest-asyncio = "*"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

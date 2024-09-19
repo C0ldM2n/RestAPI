@@ -1,0 +1,53 @@
+services:
+  postgres:
+    container_name: pg_db
+    image: postgres:15
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+
+      POSTGRES_DB: ${POSTGRES_DB}
+      PGDATA: /var/lib/postgresql/data/
+
+      POSTGRES_READ_USER: ${POSTGRES_READ_USER}
+      POSTGRES_CREATE_USER: ${POSTGRES_CREATE_USER}
+      POSTGRES_UPDATE_USER: ${POSTGRES_UPDATE_USER}
+      POSTGRES_DELETE_USER: ${POSTGRES_DELETE_USER}
+      POSTGRES_CRUD_USER: ${POSTGRES_CRUD_USER}
+
+      POSTGRES_READ_USER_PASSWORD: ${POSTGRES_READ_USER_PASSWORD}
+      POSTGRES_CREATE_USER_PASSWORD: ${POSTGRES_CREATE_USER_PASSWORD}
+      POSTGRES_UPDATE_USER_PASSWORD: ${POSTGRES_UPDATE_USER_PASSWORD}
+      POSTGRES_DELETE_USER_PASSWORD: ${POSTGRES_DELETE_USER_PASSWORD}
+      POSTGRES_CRUD_USER_PASSWORD: ${POSTGRES_CRUD_USER_PASSWORD}
+    volumes:
+      - postgres-data:/var/lib/postgresql/data/
+      - ./database:/var/lib/postgresql/data/
+      # - ./data_exports:/var/lib/postgresql/exports/
+      # - ./init-development-db.sh:/docker-entrypoint-initdb.d/init-development-db.sh
+      # - ./permissions.sh:/docker-entrypoint-initdb.d/permissions.sh
+      # - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+      - shared-backups:/var/lib/postgresql/shared_backups
+    ports:
+      - "5433:5432"
+    restart: always
+
+#  pgadmin:
+#    container_name: pgadmin
+#    image: dpage/pgadmin4
+#    environment:
+#      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL}
+#      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD}
+#      PGADMIN_CONFIG_ENHANCED_COOKIE_PROTECTION: "True"
+#    volumes:
+#      - pgadmin-data:/var/lib/pgadmin
+#      - shared-backups:/var/lib/shared_backups
+#    ports:
+#      - "8080:80"
+#      - "5050:80"
+#    restart: unless-stopped
+
+volumes:
+  postgres-data:
+  pgadmin-data:
+  shared-backups:
