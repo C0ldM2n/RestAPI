@@ -25,15 +25,17 @@ from core.db.database import get_async_session
 @pytest_asyncio.fixture()
 async def db_session() -> AsyncGenerator[AsyncSession, None]:
     """Start a test database session."""
-    db_name = settings.db_url.split("/")[-1]
     db_url = settings.db_url
-    print(db_url, db_name, "=" * 10)
+
+    # db_name = settings.db_url.split("/")[-1]
+    # print(db_url, db_name, "=" * 10)
 
     engine = create_async_engine(db_url)
 
-    async with engine.begin() as conn:
-        await conn.run_sync(Base.metadata.drop_all)
-        await conn.run_sync(Base.metadata.create_all)
+    # only for dev
+    # async with engine.begin() as conn:
+    #     await conn.run_sync(Base.metadata.drop_all)
+    #     await conn.run_sync(Base.metadata.create_all)
 
     session = async_sessionmaker(engine)()
     yield session
@@ -47,7 +49,6 @@ def test_app(db_session: AsyncSession) -> FastAPI:
     return app
 
 
-# SETUP
 @pytest.fixture(scope='session')
 def event_loop(request):
     """Create an instance of the default event loop for each test case."""

@@ -24,6 +24,7 @@ fastapi-cli = "*"
 python-dotenv = "*"
 asyncio = "*"
 greenlet = "*"
+loguru = "^0.7.2"
 
 [tool.poetry.dev-dependencies]
 pytest = "*"

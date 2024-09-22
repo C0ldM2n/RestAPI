@@ -1,12 +1,13 @@
 import typing
+
 from sqlalchemy import String, Integer, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from core.db import Base
-from countries.models import Country
 
 if typing.TYPE_CHECKING:
     from products.models import Product
+    from countries.models import Country
 
 
 class Brand(Base):

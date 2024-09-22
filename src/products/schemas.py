@@ -1,11 +1,21 @@
-from pydantic import BaseModel
+from typing import Optional
 
-class ProductPydantic(BaseModel):
+from pydantic import BaseModel, UUID4
+
+
+class ProductCreate(BaseModel):
     name: str
+    brand_id: int
+    category_id: int
     price: int
-    sku: str
-    isbn: str
+    sku: Optional[str]
+    isbn: Optional[str]
     quantity: int
     published: bool
-    created_by: str
-    updated_by: str
+    created_by: Optional[UUID4]
+    updated_by: Optional[UUID4]
+
+    class Config:
+        # orm_mode = True
+        # renamed to: from_attributes
+        from_attributes = True
