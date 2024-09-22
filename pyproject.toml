@@ -19,17 +19,17 @@ sqlalchemy = "*"
 uvicorn = "*"
 pydantic-settings = "*"
 asyncpg = "*"
-httpx = "*"
 fastapi-cli = "*"
 python-dotenv = "*"
 asyncio = "*"
 greenlet = "*"
 loguru = "^0.7.2"
+typer = "^0.12.5"
 
 [tool.poetry.dev-dependencies]
 pytest = "*"
 pytest-asyncio = "*"
-
+httpx = "*"
 
 [build-system]
 requires = ["poetry-core"]

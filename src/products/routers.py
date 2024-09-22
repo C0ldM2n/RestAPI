@@ -2,10 +2,13 @@ from fastapi import APIRouter, Depends, HTTPException, status
 
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
+from sqlalchemy.exc import IntegrityError
 
 from core.db.database import get_async_session
 
 from models import Product
+
+from core.exceptions.exp import ProductAlreadyCreated
 
 from products.schemas import ProductCreate
 from products.crud import save_product_to_db, get_product_from_db
@@ -53,7 +56,17 @@ async def create_product(product: ProductCreate, session: AsyncSession = Depends
 
 @router.post("/", response_model=ProductCreate, status_code=status.HTTP_201_CREATED)
 async def create_product(product: ProductCreate, session: AsyncSession = Depends(get_async_session)):
-    created_product = await save_product_to_db(product, session)
+    try:
+        created_product = await save_product_to_db(product, session)
+    # TODO:
+    except IntegrityError as e:
+        # print(e)
+        print("var:1", e.orig.args[-1])
+
+        err_msg = e.args[0]
+        print("var:2",err_msg)
+        raise ProductAlreadyCreated(product.isbn, product.sku)
+
     return created_product
 
 
@@ -75,6 +88,8 @@ async def bulk_create_products(product: list[ProductCreate], session: AsyncSessi
         await session.refresh(created_product)
         print(f"===============Product added with ID: {created_product.id}===============")
     print(created_products)
+
+
 
     return [ProductCreate.from_orm(created_product) for created_product in created_products] # noqa
 
