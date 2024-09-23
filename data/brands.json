@@ -1,0 +1,12 @@
+[
+  {
+    "id": 1,
+    "country_registration_id": null,
+    "name": "Apple"
+  },
+  {
+    "id": 2,
+    "country_registration_id": null,
+    "name": "Samsung"
+  }
+]

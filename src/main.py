@@ -1,13 +1,9 @@
-from fastapi import FastAPI, Request
-from fastapi.responses import JSONResponse
-from fastapi.encoders import jsonable_encoder
-from fastapi.exceptions import RequestValidationError
+from fastapi import FastAPI
 
 from config import settings
 
 from products.routers import router as router_products
 
-from core.exceptions.exp import CustomException
 from core.exceptions.handler import exception_handler_setup
 
 app = FastAPI(

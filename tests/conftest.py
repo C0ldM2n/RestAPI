@@ -7,19 +7,16 @@ from fastapi import FastAPI
 
 from httpx import AsyncClient
 
-from sqlalchemy.ext.asyncio import (
-    AsyncSession,
-    async_sessionmaker,
-    create_async_engine,
-)
+from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 
-import asyncio
+# import asyncio
 
 from main import app
 from config import settings
 
-from core.db import Base
-from core.db.database import get_async_session
+# from core.db import Base
+
+from core import get_async_session
 
 
 @pytest_asyncio.fixture()

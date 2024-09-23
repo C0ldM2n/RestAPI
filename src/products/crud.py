@@ -8,8 +8,6 @@ async def save_product_to_db(product_data, session: AsyncSession) -> Product:
     session.add(new_product)
     await session.commit()
     await session.refresh(new_product)
-    # test
-    print(f"Product added with ID: {new_product.id}")
     return new_product
 
 

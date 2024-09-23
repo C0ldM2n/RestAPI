@@ -1,57 +1,27 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from pathlib import Path
 
+from fastapi import APIRouter, Depends, HTTPException, status, UploadFile, File
+
+from sqlalchemy import delete
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.future import select
 from sqlalchemy.exc import IntegrityError
+
+from models import Product, Category, Brand
 
 from core.db.database import get_async_session
 
-from models import Product
-
 from core.exceptions.exp import ProductAlreadyCreated
+
+from core.cli import bulk_insert_data_from_files
 
 from products.schemas import ProductCreate
 from products.crud import save_product_to_db, get_product_from_db
+
 
 router = APIRouter(
     prefix="/products",
     tags=["Products"]
 )
-
-
-@router.post("/test", response_model=ProductCreate, status_code=status.HTTP_201_CREATED)
-async def create_product(product: ProductCreate, session: AsyncSession = Depends(get_async_session)):
-    # stmt = insert(Product).values(**product.model_dump())
-
-    # new_product = Product(**product.model_dump())
-    # session.add(new_product)
-    # await session.commit()
-    # await session.refresh(new_product)
-    #
-    # print(f"Product added with ID: {new_product.id}")
-
-
-    existing_product = await session.execute(
-        select(Product).where(
-            (Product.isbn == product.isbn) | (Product.sku == product.sku)
-        )
-    )
-    existing_product = existing_product.scalars().first()
-
-    if existing_product:
-        raise HTTPException(
-            status_code=400,
-            detail=f"Product with this ISBN or SKU already exists"
-        )
-
-    new_product = Product(**product.model_dump())
-
-    session.add(new_product)
-    await session.commit()
-    await session.refresh(new_product)
-    print(f"Product added with ID: {new_product.id}")
-
-    return new_product
 
 
 @router.post("/", response_model=ProductCreate, status_code=status.HTTP_201_CREATED)
@@ -60,8 +30,7 @@ async def create_product(product: ProductCreate, session: AsyncSession = Depends
         created_product = await save_product_to_db(product, session)
     # TODO:
     except IntegrityError as e:
-        # print(e)
-        print("var:1", e.orig.args[-1])
+        # print("var:1", e.orig.args[-1])
 
         err_msg = e.args[0]
         print("var:2",err_msg)
@@ -89,7 +58,49 @@ async def bulk_create_products(product: list[ProductCreate], session: AsyncSessi
         print(f"===============Product added with ID: {created_product.id}===============")
     print(created_products)
 
-
-
     return [ProductCreate.from_orm(created_product) for created_product in created_products] # noqa
 
+
+@router.post("/bulk_fill_tables", status_code=status.HTTP_201_CREATED)
+async def bulk_fill_tables(files: list[UploadFile] = File(...), session: AsyncSession = Depends(get_async_session)):
+    """
+    Bulk insert data into tables from uploaded JSON files.
+    """
+    file_paths = []
+
+    # Save the uploaded files to a temporary location
+    for file in files:
+        if not file.filename.endswith('.json'):
+            raise HTTPException(status_code=400, detail="Only JSON files are allowed.")
+
+        temp_file_path = Path(f"/tmp/{file.filename}")  # Use a temporary directory
+        with temp_file_path.open("wb") as buffer:
+            buffer.write(await file.read())
+        file_paths.append(temp_file_path)
+
+    try:
+        await bulk_insert_data_from_files(file_paths, session)
+        await session.commit()
+        return {"message": "Data inserted successfully."}
+    except Exception as e:
+        print(f"Error during bulk insertion: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.delete("/clear_all", status_code=204)
+async def clear_all_records(session: AsyncSession = Depends(get_async_session)):
+    """
+    Delete all records from all tables.
+    """
+    try:
+        # Delete all records from each table
+        await session.execute(delete(Product))
+        await session.execute(delete(Category))
+        await session.execute(delete(Brand))
+
+        # Commit the changes to the database
+        await session.commit()
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+    return {"message": "All records deleted successfully."}

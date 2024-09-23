@@ -16,6 +16,4 @@ class ProductCreate(BaseModel):
     updated_by: Optional[UUID4]
 
     class Config:
-        # orm_mode = True
-        # renamed to: from_attributes
         from_attributes = True

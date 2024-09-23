@@ -14,7 +14,7 @@ class Brand(Base):
     __tablename__ = "brands"
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
-    country_registration_id: Mapped[int] = mapped_column(ForeignKey("countries.id"))
+    country_registration_id: Mapped[int] = mapped_column(ForeignKey("countries.id"), nullable=True)
     name: Mapped[str] = mapped_column(String)
 
     products: Mapped[list["Product"]] = relationship(back_populates="brand")
