@@ -1,4 +1,8 @@
+from pathlib import Path
+from unittest import mock
 from collections.abc import AsyncGenerator
+
+from dotenv import load_dotenv
 
 import pytest
 import pytest_asyncio
@@ -15,8 +19,51 @@ from main import app
 from config import settings
 
 # from core.db import Base
+from core.db.database import get_async_session
 
-from core import get_async_session
+
+
+import os
+
+test_env = Path(__file__).parent.parent / ".env.test"
+load_dotenv(test_env, override=True)
+
+@pytest.fixture(autouse=True)
+def print_loaded_env_vars():
+    print(f"Loaded test environment variables from: {test_env}")
+    for key, value in os.environ.items():
+        if key.startswith("POSTGRES_"):
+            print(f"{key} = {value}")
+
+# # Overriding the environment file for tests
+# @pytest.fixture(scope='session', autouse=True)
+# def load_test_env():
+#     if test_env.exists():
+#         load_dotenv(test_env, override=True)
+#         print(f"Loaded test environment variables from: {test_env}")
+#     else:
+#         raise FileNotFoundError(f"Test .env file not found at: {test_env}")
+#
+#
+# # Mocking the settings to use the test .env during tests
+# @pytest.fixture
+# def mock_settings_env(monkeypatch):
+#     with mock.patch.object(settings.model_config, 'env_file', new=str(Path(__file__).parent.parent / '.env.test')):
+#         yield
+
+
+
+def pytest_configure(config):
+    # This is run before any imports allowing us to inject
+    # dependencies via environment variables into Settings
+    # This just affects the variables in this process's environment
+
+    # Find the .env file for the test environment
+    test_env = str(settings.base_dir / ".env.test")
+    # Load the environment variables and overwrite any existing ones
+    load_dotenv(test_env, override=True)
+
+
 
 
 @pytest_asyncio.fixture()

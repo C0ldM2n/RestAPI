@@ -58,7 +58,7 @@ async def bulk_create_products(product: list[ProductCreate], session: AsyncSessi
         print(f"===============Product added with ID: {created_product.id}===============")
     print(created_products)
 
-    return [ProductCreate.from_orm(created_product) for created_product in created_products] # noqa
+    return [ProductCreate.model_validate(created_product) for created_product in created_products] # noqa
 
 
 @router.post("/bulk_fill_tables", status_code=status.HTTP_201_CREATED)

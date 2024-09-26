@@ -3,6 +3,9 @@
     alembic revision --autogenerate
     alembic upgrade head
 ---
+    delete from products;
+    select * from products;
+---
 export $(xargs < .env)
 env to virtual env.
 ---
@@ -14,8 +17,8 @@ env to virtual env.
 - ? (in sublime 2 variants)
 - [x] routers and models
 - 
-- [ ] fix import s in models
-- [ ] fill the tables (for test)
-- [ ] Base metadata - sqlalchemy
+- [x] fix import s in models
+- [x] fill the tables (for test)
+- [x] Base metadata - sqlalchemy
 - ////
 - [ ] tests

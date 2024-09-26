@@ -51,12 +51,9 @@ async def test_bulk_create_products(client: AsyncClient):
         products = json.load(f)
 
     response = await client.post("/products/bulk_create_products", json=products)
-    assert response.status_code == status.HTTP_201_CREATED
+    assert response.status_code == status.HTTP_201_CREATED, (f"Unexpected status code: {response.status_code}. "
+                                                             f"Response text: {response.text}")
 
-    # assert response.status_code == status.HTTP_201_CREATED, (f"Unexpected status code: {response.status_code}. "
-    #                                                          f"Response text: {response.text}")
-
-    # Check if products are created
     response_data = response.json()
 
     assert len(response_data) == len(products)
