@@ -47,7 +47,7 @@ async def get_product(product_id: int, session: AsyncSession = Depends(get_async
     return product
 
 
-@router.post("/bulk_create_products", response_model=list[ProductCreate], status_code=status.HTTP_201_CREATED)
+@router.post("/bulk-create-products", response_model=list[ProductCreate], status_code=status.HTTP_201_CREATED)
 async def bulk_create_products(product: list[ProductCreate], session: AsyncSession = Depends(get_async_session)):
     created_products = [Product(**product.model_dump()) for product in product]
     session.add_all(created_products)
@@ -58,7 +58,7 @@ async def bulk_create_products(product: list[ProductCreate], session: AsyncSessi
         print(f"===============Product added with ID: {created_product.id}===============")
     print(created_products)
 
-    return [ProductCreate.model_validate(created_product) for created_product in created_products] # noqa
+    return [ProductCreate.model_validate(created_product) for created_product in created_products]
 
 
 @router.post("/bulk_fill_tables", status_code=status.HTTP_201_CREATED)
@@ -87,7 +87,7 @@ async def bulk_fill_tables(files: list[UploadFile] = File(...), session: AsyncSe
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@router.delete("/clear_all", status_code=204)
+@router.delete("/clear-all", status_code=204)
 async def clear_all_records(session: AsyncSession = Depends(get_async_session)):
     """
     Delete all records from all tables.

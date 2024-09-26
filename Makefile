@@ -3,7 +3,7 @@ ifneq (,$(wildcard .env))
     export $(shell sed 's/=.*//' .env)
 endif
 
-.PHONY: start test makemigrations migrate
+.PHONY: start makemigrations migrate test
 
 start:
 	poetry run uvicorn src.main:app --reload --port 8001
