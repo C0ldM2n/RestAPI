@@ -6,17 +6,14 @@ from sqlalchemy import delete
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.exc import IntegrityError
 
-from models import Product, Category, Brand
-
 from core.db.database import get_async_session
-
 from core.exceptions.exp import ProductAlreadyCreated
 
 from core.cli import bulk_insert_data_from_files
 
+from models import Product, Category, Brand
 from products.schemas import ProductCreate
 from products.crud import save_product_to_db, get_product_from_db
-
 
 router = APIRouter(
     prefix="/products",
@@ -28,12 +25,10 @@ router = APIRouter(
 async def create_product(product: ProductCreate, session: AsyncSession = Depends(get_async_session)):
     try:
         created_product = await save_product_to_db(product, session)
-    # TODO:
+    # TODO: handling errors
     except IntegrityError as e:
-        # print("var:1", e.orig.args[-1])
-
         err_msg = e.args[0]
-        print("var:2",err_msg)
+        print(err_msg)
         raise ProductAlreadyCreated(product.isbn, product.sku)
 
     return created_product
@@ -55,13 +50,13 @@ async def bulk_create_products(product: list[ProductCreate], session: AsyncSessi
 
     for created_product in created_products:
         await session.refresh(created_product)
-        print(f"===============Product added with ID: {created_product.id}===============")
-    print(created_products)
+    #     print(f"===============Product added with ID: {created_product.id}===============")
+    # print(created_products)
 
     return [ProductCreate.model_validate(created_product) for created_product in created_products]
 
 
-@router.post("/bulk_fill_tables", status_code=status.HTTP_201_CREATED)
+@router.post("/bulk-fill-tables", status_code=status.HTTP_201_CREATED)
 async def bulk_fill_tables(files: list[UploadFile] = File(...), session: AsyncSession = Depends(get_async_session)):
     """
     Bulk insert data into tables from uploaded JSON files.
@@ -93,12 +88,10 @@ async def clear_all_records(session: AsyncSession = Depends(get_async_session)):
     Delete all records from all tables.
     """
     try:
-        # Delete all records from each table
         await session.execute(delete(Product))
         await session.execute(delete(Category))
         await session.execute(delete(Brand))
 
-        # Commit the changes to the database
         await session.commit()
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

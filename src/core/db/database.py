@@ -12,3 +12,10 @@ session_maker = async_sessionmaker(engine, expire_on_commit=False)
 async def get_async_session() -> AsyncGenerator[AsyncSession, None]:
     async with session_maker() as session:
         yield session
+
+
+# TODO: write decorator
+# def init_session():
+#     def _decorator(func: typing.Callable):
+#         @wraps(func)
+#         async def wrapper(*args, **kwargs):

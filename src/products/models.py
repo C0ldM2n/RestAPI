@@ -4,7 +4,6 @@ from sqlalchemy import ForeignKey, String, UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from core.db import Base, DateTimeMixin
-
 from brands.models import Brand
 from categories.models import Category
 

@@ -1,19 +1,20 @@
-import asyncio
 import os
 import sys
-
-from logging.config import fileConfig
+import asyncio
 
 from sqlalchemy import pool
 from sqlalchemy.engine import Connection
 from sqlalchemy.ext.asyncio import async_engine_from_config
 
 from alembic import context
+
 from logging import getLogger
+from logging.config import fileConfig
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'src')))
-from config import settings as base_config  # noqa
-from models import Base  # noqa
+
+from config import settings as base_config
+from models import Base
 
 alembic_config = context.config
 

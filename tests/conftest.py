@@ -1,3 +1,4 @@
+import asyncio
 from pathlib import Path
 from collections.abc import AsyncGenerator
 
@@ -5,10 +6,7 @@ import pytest
 import pytest_asyncio
 
 from fastapi import FastAPI
-
 from httpx import AsyncClient, ASGITransport
-
-
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 
 import config as conf
@@ -25,7 +23,7 @@ async def test_settings() -> Settings:
 @pytest_asyncio.fixture()
 async def db_session(test_settings: Settings) -> AsyncGenerator[AsyncSession, None]:
     """Start a test database session."""
-    db_url = Settings.db_url
+    # db_url = Settings.db_url
     engine = create_async_engine(test_settings.db_url)
 
     # TODO : REALIZE THIS
@@ -33,6 +31,15 @@ async def db_session(test_settings: Settings) -> AsyncGenerator[AsyncSession, No
     # async with engine.begin() as conn:
     #     await conn.run_sync(Base.metadata.drop_all)
     #     await conn.run_sync(Base.metadata.create_all)
+
+    # async with engine.begin() as conn:
+    #     await conn.run_sync(Base.metadata.clear())
+
+    # with contextlib.closing(engine.connect()) as con:
+    #     trans = con.begin()
+    #     for table in reversed(Base.metadata.sorted_tables):
+    #         con.execute(table.delete())
+    #     trans.commit()
 
     session = async_sessionmaker(engine)()
     yield session
@@ -48,14 +55,14 @@ def test_app(db_session: AsyncSession) -> FastAPI:
     return app
 
 
-# @pytest.fixture(scope='session')
-# def event_loop(request):
-#     """Create an instance of the default event loop for each test case."""
-#     loop = asyncio.new_event_loop()
-#     asyncio.set_event_loop(loop)
-#
-#     yield loop
-#     loop.close()
+@pytest.fixture(scope='session')
+def event_loop(request):
+    """Create an instance of the default event loop for each test case."""
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+
+    yield loop
+    loop.close()
 
 
 @pytest.fixture(scope="session")
