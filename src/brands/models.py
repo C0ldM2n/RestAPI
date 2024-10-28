@@ -13,7 +13,7 @@ if typing.TYPE_CHECKING:
 class Brand(Base):
     __tablename__ = "brands"
 
-    id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True, nullable=False)
     country_registration_id: Mapped[int] = mapped_column(ForeignKey("countries.id"), nullable=True)
     name: Mapped[str] = mapped_column(String)
 

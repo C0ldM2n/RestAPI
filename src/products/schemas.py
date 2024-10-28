@@ -2,7 +2,6 @@ from typing import Optional
 
 from pydantic import BaseModel, ConfigDict ,UUID4
 
-
 class ProductCreate(BaseModel):
     name: str
     brand_id: int

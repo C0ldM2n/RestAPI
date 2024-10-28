@@ -1,12 +1,14 @@
 import json
+import logging
 from typing import Any
 from pathlib import Path
 
-from sqlalchemy import insert
-from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy import insert, text
+from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 
-from core.db.database import session_maker
+from core.db.database import engine, session_maker
 from config import settings
+from models import Base
 
 TABLE_PRIORITY = {
     "brands": 1,
@@ -21,6 +23,7 @@ FILE_TABLE_MAPPING = {
 }
 
 
+# TODO: get tablename in method
 def get_table_model(table_name: str):
     """Return the SQLAlchemy model class for the given table name."""
     from models import Brand, Category, Product
@@ -45,7 +48,7 @@ async def load_json_file(file_path: Path) -> list[dict[str, Any]]:
 async def bulk_insert_data(table_name: str, data: list[dict[str, Any]], session: AsyncSession):
     """Insert data into the specified table."""
     if not data:
-        print(f"No data to insert for table {table_name}.")
+        print(f"No data to insert for table {table_name}")
         return
 
     table_model = get_table_model(table_name)
@@ -63,7 +66,7 @@ async def bulk_insert_data_from_files(files: list[Path], session: AsyncSession):
         file_name = file_path.name
         table_name = FILE_TABLE_MAPPING.get(file_name)
         if not table_name:
-            raise ValueError(f"Unknown table for file {file_name}.")
+            raise ValueError(f"Unknown table for file {file_name}")
 
         data = await load_json_file(file_path)
         file_data.append((table_name, data))
@@ -88,3 +91,48 @@ async def bulk_insert_all_jsons():
         data_folder = Path("/".join([settings.BASE_DIR, "data"]))
         json_files = list(data_folder.glob('*.json'))
         await bulk_insert_data_from_files(json_files, session)
+
+
+async def create_database():
+    db = settings.db_url.rsplit("/", maxsplit=1)
+    # logging.info(settings.db_url)
+    db_name = db[1]
+    url = db[0] + "/postgres"
+    engine_pg = create_async_engine(url, isolation_level="AUTOCOMMIT")
+    async with engine_pg.connect() as conn:
+        if not db_name.isidentifier():
+            raise ValueError(f'Invalid database name: "{db_name}"')
+        from sqlite3 import ProgrammingError
+        try:
+            logging.info(f'Creating database "{db_name}" {10 * '--'}')
+            await conn.execute(text(f'CREATE DATABASE "{db_name}"'))
+        except ProgrammingError:
+            print(f'Database "{db_name}" already exists')
+            return
+    await engine_pg.dispose()
+
+
+async def drop_database():
+    db = settings.db_url.rsplit("/", maxsplit=1)
+    # logging.info(settings.db_url)
+    db_name = db[1]
+    url = db[0] + "/postgres"
+    engine_pg = create_async_engine(url, isolation_level="AUTOCOMMIT")
+    async with engine_pg.connect() as conn:
+        if not db_name.isidentifier():
+            raise ValueError(f'Invalid database name: "{db_name}"')
+        from sqlite3 import ProgrammingError
+        try:
+            logging.info(f'Drop database "{db_name}" {10 * '--'}')
+            await conn.execute(text(f'DROP DATABASE "{db_name}" WITH (FORCE)'))
+        except ProgrammingError:
+            print(f'Database "{db_name}" not found')
+            return
+    await engine_pg.dispose()
+
+
+async def create_tables():
+    async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.drop_all)
+        await conn.run_sync(Base.metadata.create_all)
+    await engine.dispose()

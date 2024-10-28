@@ -1,9 +1,8 @@
-from products.models import Product
-from categories.models import Category
 from brands.models import Brand
-from countries.models import Country
-
+from categories.models import Category
 from core.db import Base
+from countries.models import Country
+from products.models import Product
 
 __all__ = [
     "Base",

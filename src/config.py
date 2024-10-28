@@ -1,7 +1,6 @@
 from pathlib import Path
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
-
 from sqlalchemy import URL
 
 
@@ -27,6 +26,5 @@ class Settings(BaseSettings):
     def db_url(self) -> [str, URL]:
         return f'postgresql+asyncpg://{self.POSTGRES_USER}:{self.POSTGRES_PASSWORD}@' \
                f'{self.POSTGRES_HOST}:{self.POSTGRES_PORT}/{self.POSTGRES_DB}'
-
 
 settings = Settings()

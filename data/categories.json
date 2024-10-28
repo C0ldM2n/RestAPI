@@ -3,18 +3,14 @@
     "id": 1,
     "parent_id": null,
     "image_url": null,
-    "category_name": "Test1",
-    "active": true,
-    "created_by": null,
-    "updated_by": null
+    "name": "Test1",
+    "is_active": true
   },
   {
     "id": 2,
     "parent_id": null,
     "image_url": null,
-    "category_name": "Test1",
-    "active": true,
-    "created_by": null,
-    "updated_by": null
+    "name": "Test1",
+    "is_active": true
   }
 ]

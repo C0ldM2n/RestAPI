@@ -47,20 +47,14 @@ async def bulk_create_products(product: list[ProductCreate], session: AsyncSessi
     created_products = [Product(**product.model_dump()) for product in product]
     session.add_all(created_products)
     await session.commit()
-
     for created_product in created_products:
         await session.refresh(created_product)
-    #     print(f"===============Product added with ID: {created_product.id}===============")
-    # print(created_products)
-
     return [ProductCreate.model_validate(created_product) for created_product in created_products]
 
 
 @router.post("/bulk-fill-tables", status_code=status.HTTP_201_CREATED)
 async def bulk_fill_tables(files: list[UploadFile] = File(...), session: AsyncSession = Depends(get_async_session)):
-    """
-    Bulk insert data into tables from uploaded JSON files.
-    """
+    """Bulk insert data into tables from uploaded JSON files."""
     file_paths = []
 
     # Save the uploaded files to a temporary location
@@ -82,11 +76,10 @@ async def bulk_fill_tables(files: list[UploadFile] = File(...), session: AsyncSe
         raise HTTPException(status_code=500, detail=str(e))
 
 
+
 @router.delete("/clear-all", status_code=204)
 async def clear_all_records(session: AsyncSession = Depends(get_async_session)):
-    """
-    Delete all records from all tables.
-    """
+    """Delete all records from all tables"""
     try:
         await session.execute(delete(Product))
         await session.execute(delete(Category))
@@ -97,3 +90,12 @@ async def clear_all_records(session: AsyncSession = Depends(get_async_session)):
         raise HTTPException(status_code=500, detail=str(e))
 
     return {"message": "All records deleted successfully."}
+
+
+@router.get("/kwargs/{id_category}")
+async def get_category(id_category: int, session: AsyncSession = Depends(get_async_session)):
+    """Delete all records from all tables"""
+    # Base.get(Category, id)
+    obj = await Category.get(session, id=id_category)
+    print(obj.__dict__)
+    return id_category

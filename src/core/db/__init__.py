@@ -1,4 +1,4 @@
-from .mixins import DateTimeMixin
+from core.db.mixins import DateTimeMixin
 from .models import Base
 
 
