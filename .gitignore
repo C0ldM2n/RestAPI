@@ -123,6 +123,7 @@ celerybeat.pid
 
 # Environments
 .env
+.env.test
 .venv
 env/
 venv/
@@ -130,7 +131,6 @@ ENV/
 env.bak/
 venv.bak/
 
-.env.test
 # Spyder project settings
 .spyderproject
 .spyproject
@@ -161,4 +161,4 @@ cython_debug/
 #  and can be added to the global gitignore or merged into this file.  For a more nuclear
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 .idea/
-database
+database!/.env.test

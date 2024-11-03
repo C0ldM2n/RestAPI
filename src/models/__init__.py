@@ -1,11 +1,10 @@
-from brands.models import Brand
-from categories.models import Category
 from core.db import Base
-from countries.models import Country
-from products.models import Product
+from products import Product, Brand, Category, Country
+from users.models import User
 
 __all__ = [
-    "Base",
-    "Product", "Brand",
-    "Category", "Country"
+	"Base",
+	"Product", "Brand",
+	"Category", "Country",
+	"User"
 ]

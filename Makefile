@@ -8,7 +8,7 @@ endif
 #    export $(shell sed 's/=.*//' .env.test)
 #endif
 
-.PHONY: start tests makemigration migrate exportpath cli-createdb cli-dropdb cli-all cli-base
+.PHONY: start tests makemigration migrate exportpath cli-createdb cli-dropdb cli-all cli-base lint
 
 start:
 	@echo "Starting Uvicorn server (8001)..."
@@ -29,6 +29,11 @@ migrate:
 exportpath:
 	export PYTHONPATH=./src
 
+lint:
+	poetry run black ./
+	poetry run isort ./
+	poetry run ruff check ./
+	poetry run mypy ./
 
 cli-createdb:
 	poetry run python3 -m src.core.cli.cli create_database

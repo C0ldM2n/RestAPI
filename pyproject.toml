@@ -2,7 +2,7 @@
 name = "Product API"
 version = "0.1.0"
 description = ""
-authors = ["kostya12362", "coldman"]
+authors = ["coldman", "kostya12362"]
 
 [tool.poetry.dependencies]
 python = "^3.12"
@@ -26,18 +26,145 @@ pytest-asyncio = "0.24.0"
 pytest-mock = "3.14.0"
 httpx = "0.27.2"
 black = "24.10.0"
+coverage = "7.6.4"
+mypy = "1.13.0"
+isort = "5.13.2"
+ruff = "0.7.2"
+
+# ruff configuration
+[tool.ruff.lint]
+# Enable pycodestyle (`E`) and Pyflakes (`F`) codes by default.
+select = ["E", "F"]
+ignore = []
+
+# Allow autofix for all enabled rules (when `--fix`) is provided.
+fixable = ["A", "B", "C", "D", "E", "F", "G", "I", "N", "Q", "S", "T", "W", "ANN", "ARG", "BLE", "COM", "DJ", "DTZ", "EM", "ERA", "EXE", "FBT", "ICN", "INP", "ISC", "NPY", "PD", "PGH", "PIE", "PL", "PT", "PTH", "PYI", "RET", "RSE", "RUF", "SIM", "SLF", "TCH", "TID", "TRY", "UP", "YTT"]
+unfixable = []
+
+[tool.ruff]
+# Exclude a variety of commonly ignored directories.
+line-length = 79
+exclude = [
+    ".bzr",
+    ".direnv",
+    ".eggs",
+    ".git",
+    ".hg",
+    ".mypy_cache",
+    ".nox",
+    ".pants.d",
+    ".pytype",
+    ".mypy_cache",
+    ".ruff_cache",
+    ".svn",
+    ".tox",
+    ".venv",
+    "__pypackages__",
+    "__pycache_",
+    "_build",
+    "buck-out",
+    "build",
+    "dist",
+    "venv",
+    "Makefile",
+    "migrations",
+]
+
+# iSort configuration
+[tool.isort]
+profile = "black"
+multi_line_output = 3
+include_trailing_comma = true
+force_grid_wrap = 0
+use_parentheses = true
+line_length = 79
+skip = '.venv,venv,env,anomaly_detector'
+src_paths = ["src"]
+
+# Black configuration
+[tool.black]
+target-version = ['py312']
+exclude = '''
+(
+  /(
+      \.eggs         # exclude a few common directories in the
+    | \.git          # root of the project
+    | \.hg
+    | \.mypy_cache
+    | \.tox
+    | \.venv
+    | venv
+    | .venv
+    | _build
+    | buck-out
+    | build
+    | dist
+    | migrations
+  )/
+                     # the root of the project
+)
+'''
+# Same as Black.
+line-length = 79
+
+# Allow unused variables when underscore-prefixed.
+dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
+
+# MyPy configuration
+[tool.mypy]
+plugins = [
+    "pydantic.mypy"
+]
+python_version = '3.12'
+
+# Add the 'src' directory to the module search path
+mypy_path = ['src']
+
+# Specify the directories to check
+files = [
+    'src',
+    'tests',
+]
+
+warn_redundant_casts = true
+warn_unused_ignores = true
+show_error_codes = true
+explicit_package_bases = true
+
+exclude = [
+    "migrations",
+    "simulator",
+    "anomaly_detector",
+    "estimator",
+]
+
+# Suppress type import errors
+follow_imports = 'silent'
+
+[[tool.mypy.overrides]]
+module = [
+    "websockets.exceptions",
+]
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+pythonpath = [
+    ".", "src",
+]
+addopts = '-s -v --cache-clear'
+python_functions = 'test_* *_test'
+asyncio_mode = "auto"
+log_cli = true
+log_cli_level = "DEBUG"
+log_cli_format = "%(asctime)s %(levelname)s %(message)s"
+
+[tool.coverage.run]
+omit = [
+    "*/conftest.py",
+    "*/test_*.py",
+    "*/migrations/",
+]
 
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
-
-
-[tool.pytest.ini_options]
-pythonpath = [
-  ".", "src",
-]
-asyncio_mode="auto"
-asyncio_default_fixture_loop_scope = "function"
-log_cli = true
-log_cli_level = "DEBUG"
-log_cli_format = "%(asctime)s %(levelname)s %(message)s"

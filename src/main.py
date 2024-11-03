@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 
-from categories.routers import router as router_categories
+from products.categories.routers import router as router_categories
 from config import settings
 from core.exceptions.handler import exception_handler_setup
 # from products.routers import router as router_products

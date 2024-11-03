@@ -7,9 +7,8 @@ from sqlalchemy import select, delete, BinaryExpression
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from core.exceptions import ValidationError
-
 """Type variables for BaseRepository"""
+# Table model
 Model = TypeVar("Model")
 # Flexible ID type (int and uuid)
 ID = TypeVar("ID", bound=Union[uuid.UUID, int])
@@ -43,12 +42,13 @@ class BaseRepository(Generic[Model, ID]):
 			await self.session.rollback()
 			raise HTTPException(status_code=500, detail="An unexpected error occurred")
 
-	async def _validate_parent_id(self, data, pk: ID):
+	@staticmethod
+	async def _validate_parent_id(data, pk: ID):
 		if data.parent_id == pk:
 			raise HTTPException(status_code=409, detail="A category cannot have itself as its parent")
 
 	async def create(self, data):
-		await self._validate_parent_id(data, data.parent_id)
+		await self._validate_parent_id(data, data.id)
 		return await self._execute_with_error_handling(self._create, data)
 
 	async def _create(self, data) -> Model:
@@ -61,8 +61,6 @@ class BaseRepository(Generic[Model, ID]):
 		await self.session.commit()
 		# Update the object to reflect the new values
 		await self.session.refresh(instance)
-		# Closing session
-		await self.session.close()
 
 		return instance
 
@@ -74,8 +72,6 @@ class BaseRepository(Generic[Model, ID]):
 			# Check if the object exists
 			if not obj:
 				raise HTTPException(status_code=404, detail="Item not found")
-			# Closing session
-			await self.session.close()
 
 			return obj
 
@@ -102,44 +98,39 @@ class BaseRepository(Generic[Model, ID]):
 			await self.session.commit()
 			# Update the object to reflect the updated values
 			await self.session.refresh(obj)
-			# Closing session
-			await self.session.close()
 
 		return obj
 
-	async def patch(self, pk: int, data):
-		await self._validate_parent_id(data, data.primary_key)
-		return await self._execute_with_error_handling(self._patch, pk, data)
-
-	async def _patch(self, pk: ID, data: BaseModel) -> Model | None:
-		"""Update a record by Primary Key (PK)"""
-		# Check if the object exists
-		obj = await self.session.get(self.model, pk)
-		if not obj:
-			raise HTTPException(status_code=404, detail="Item not found")
-		if obj:
-			# Unpack the Pydantic model into a dictionary
-			update_data = data.model_dump(exclude_unset=True)  # Only update fields that were provided
-			# Update the objects attributes
-			for key, value in update_data.items():
-				setattr(obj, key, value)
-			# Commit the changes to the database
-			await self.session.commit()
-			# Update the object to reflect the updated values
-			await self.session.refresh(obj)
-			# Closing session
-			await self.session.close()
-
-		return obj
+	# async def patch(self, pk: int, data):
+	# 	await self._validate_parent_id(data, data.primary_key)
+	# 	return await self._execute_with_error_handling(self._patch, pk, data)
+	#
+	# async def _patch(self, pk: ID, data: BaseModel) -> Model | None:
+	# 	"""Update a record by Primary Key (PK)"""
+	# 	# Check if the object exists
+	# 	obj = await self.session.get(self.model, pk)
+	# 	if not obj:
+	# 		raise HTTPException(status_code=404, detail="Item not found")
+	# 	if obj:
+	# 		# Unpack the Pydantic model into a dictionary
+	# 		update_data = data.model_dump(exclude_unset=True)  # Only update fields that were provided
+	# 		# Update the objects attributes
+	# 		for key, value in update_data.items():
+	# 			setattr(obj, key, value)
+	# 		# Commit the changes to the database
+	# 		await self.session.commit()
+	# 		# Update the object to reflect the updated values
+	# 		await self.session.refresh(obj)
+	#
+	# 	return obj
 
 	async def delete_by_id(self, pk: int):
-		await self._validate_parent_id(data, data.primary_key)
 		return await self._execute_with_error_handling(self._delete_by_id, pk)
 
 	async def _delete_by_id(self, pk: ID) -> None:
 		"""Delete a record by Primary Key (PK)"""
 		# Creating query with data for delete
-		query = delete(self.model).where(self.model.id == pk)
+		query = delete(self.model).where(pk == self.model.id)
 		# Executing query for delete
 		result = await self.session.execute(query)
 		# Check if the object exists
@@ -147,16 +138,6 @@ class BaseRepository(Generic[Model, ID]):
 			raise NotFoundException(f"Record with ID {pk} not found.")
 		# Commit the changes to the database
 		await self.session.commit()
-		# Closing session
-		await self.session.close()
-
-		# obj = await self.session.get(self.model, pk)
-		# if not obj:
-		# 	raise HTTPException(status_code=404, detail=f"{self.model.__name__} not found")
-		#
-		# await self.session.delete(obj)
-		# await self.session.commit()
-		# return {"message": f"{self.model.__name__} deleted successfully"}
 
 	async def filter(self, *expressions: BinaryExpression) -> list[Model]:
 		"""Filtering with where"""
@@ -166,11 +147,3 @@ class BaseRepository(Generic[Model, ID]):
 		result = await self.session.scalars(query)
 
 		return list(result)
-
-		# except IntegrityError as e:
-		#     await self.session.rollback()
-		#     raise IntegrityConflictException(f"Could not delete record: {str(e)}")
-		#
-		# except Exception as e:
-		# 	await self.session.rollback()
-		# 	raise e

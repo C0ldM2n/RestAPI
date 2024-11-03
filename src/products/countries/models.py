@@ -3,13 +3,13 @@ import typing
 from sqlalchemy import Integer
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from core.db import Base, DateTimeMixin
+from core.db import Base, TimeMixin
 
 if typing.TYPE_CHECKING:
-    from brands.models import Brand
+    from products.brands.models import Brand
 
 
-class Country(Base, DateTimeMixin):
+class Country(Base, TimeMixin):
     __tablename__ = "countries"
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True, nullable=False)

@@ -12,8 +12,9 @@ from models import Base
 
 TABLE_PRIORITY = {
     "brands": 1,
-    "categories": 2,
-    "products": 3
+    "users" : 2,
+    "categories": 3,
+    "products": 4
 }
 
 FILE_TABLE_MAPPING = {

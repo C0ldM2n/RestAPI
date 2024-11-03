@@ -21,6 +21,9 @@ Creating a database revision
     make migrate
 Upgrading to head revision
 
+    make lint
+Linter project
+
 #### CLI commands
     make cli-createdb
 Creating database
@@ -36,13 +39,3 @@ Inserting all jsons from /data folder
 
     make cli-base
 Inserting base jsons (configured in /src/core/cli/utils.py) from /data folder
-
-## Library versions
-Python 3.12.7\
-fastapi 0.115.0\
-alembic 1.13.2\
-sqlalchemy 2.0.35\
-pydantic 2.9.2
-
-pytest 8.3.3\
-pytest-asyncio 0.24.0

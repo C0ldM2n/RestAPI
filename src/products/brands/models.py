@@ -6,8 +6,8 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from core.db import Base
 
 if typing.TYPE_CHECKING:
-    from products.models import Product
-    from countries.models import Country
+    from products.products.models import Product
+    from products.countries.models import Country
 
 
 class Brand(Base):
