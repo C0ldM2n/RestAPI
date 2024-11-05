@@ -18,7 +18,3 @@ class CategoryRepository(BaseRepository[Category, int]):
 	async def get_category_repository(cls, session: AsyncSession = Depends(get_async_session)):
 		"""Method for sending a session to CategoryRepository"""
 		return cls(Category, session)
-
-async def get_repository(cls, session: AsyncSession = Depends(get_async_session)) -> typing.Type['CategoryRepository']:
-	"""Method for sending a session to CategoryRepository"""
-	return cls(Category, session)

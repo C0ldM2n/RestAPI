@@ -6,4 +6,5 @@ from .models import Base
 
 __all__ = ["TimeMixin",
            "UserMixin",
+           "TreeMixin",
            "Base"]

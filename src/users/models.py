@@ -18,4 +18,4 @@ class User(Base, TimeMixin):
 
 	# TODO: create password and email mixin
 
-	brands: Mapped[list["Brand"]] = relationship(back_populates="user")
+	# brands: Mapped[list["Brand"]] = relationship(back_populates="user")

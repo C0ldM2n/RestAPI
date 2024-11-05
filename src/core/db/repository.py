@@ -1,24 +1,19 @@
 import uuid
 from typing import Generic, TypeVar, Union
 
-from fastapi import HTTPException
 from pydantic import BaseModel
 from sqlalchemy import select, delete, BinaryExpression
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
+
+from core.exceptions import (CategoryNotFounded, CategoryUnprocessableEntity,
+                             ValidationError, DatabaseIntegrityError, UnexpectedError)
 
 """Type variables for BaseRepository"""
 # Table model
 Model = TypeVar("Model")
 # Flexible ID type (int and uuid)
 ID = TypeVar("ID", bound=Union[uuid.UUID, int])
-
-"""Custom exceptions"""
-class IntegrityConflictException(Exception):
-	pass
-
-class NotFoundException(Exception):
-	pass
 
 
 class BaseRepository(Generic[Model, ID]):
@@ -34,18 +29,24 @@ class BaseRepository(Generic[Model, ID]):
 		try:
 			return await func(*args, **kwargs)
 		except IntegrityError as e:
+			# Database integrity error handling
 			await self.session.rollback()
-			raise HTTPException(status_code=400, detail=f"Database integrity error: {str(e)}")
-			# raise ValidationError("Integrity constraint violated") from e
-		except Exception:
+			raise DatabaseIntegrityError(str(e))
+		except ValueError as e:
+			# Validating values error handling
+			raise ValidationError(str(e))
+		except Exception as e:
 			# Generic error handling
 			await self.session.rollback()
-			raise HTTPException(status_code=500, detail="An unexpected error occurred")
+			raise UnexpectedError(str(e))
 
 	@staticmethod
 	async def _validate_parent_id(data, pk: ID):
-		if data.parent_id == pk:
-			raise HTTPException(status_code=409, detail="A category cannot have itself as its parent")
+		if data.parent_id is None:
+			pass
+
+		elif data.parent_id == pk:
+			raise CategoryUnprocessableEntity(pk, data.parent_id)
 
 	async def create(self, data):
 		await self._validate_parent_id(data, data.id)
@@ -70,13 +71,15 @@ class BaseRepository(Generic[Model, ID]):
 			# Creating variable with the resulting entry
 			obj = await self.session.get(self.model, pk)
 			# Check if the object exists
-			if not obj:
-				raise HTTPException(status_code=404, detail="Item not found")
-
+			if obj is None:
+				raise CategoryNotFounded(pk)
 			return obj
 
-		except Exception as e:
+		except CategoryNotFounded as e:
 			raise e
+
+		except Exception as e:
+			raise UnexpectedError(str(e))
 
 	async def put(self, pk: int, data):
 		await self._validate_parent_id(data, data.parent_id)
@@ -88,8 +91,7 @@ class BaseRepository(Generic[Model, ID]):
 		obj = await self.session.get(self.model, pk)
 
 		if not obj:
-			raise HTTPException(status_code=404, detail="Item not found")
-			# raise IntegrityError(f"{self.model.__name__} with id {pk} not found.")
+			raise CategoryNotFounded(pk)
 		if obj:
 			# Replacing entire record
 			for key, value in data.model_dump().items():
@@ -110,7 +112,7 @@ class BaseRepository(Generic[Model, ID]):
 	# 	# Check if the object exists
 	# 	obj = await self.session.get(self.model, pk)
 	# 	if not obj:
-	# 		raise HTTPException(status_code=404, detail="Item not found")
+	# 		raise CategoryNotFounded()
 	# 	if obj:
 	# 		# Unpack the Pydantic model into a dictionary
 	# 		update_data = data.model_dump(exclude_unset=True)  # Only update fields that were provided
@@ -135,7 +137,7 @@ class BaseRepository(Generic[Model, ID]):
 		result = await self.session.execute(query)
 		# Check if the object exists
 		if result.rowcount == 0:
-			raise NotFoundException(f"Record with ID {pk} not found.")
+			raise CategoryNotFounded(pk)
 		# Commit the changes to the database
 		await self.session.commit()
 
