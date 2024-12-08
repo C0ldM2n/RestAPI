@@ -1,48 +1,38 @@
-from fastapi import FastAPI, status, Request
-from fastapi.encoders import jsonable_encoder
-from fastapi.exceptions import RequestValidationError
+from fastapi import Request
 from fastapi.responses import JSONResponse
-from loguru import logger
+from fastapi.exceptions import RequestValidationError
+from starlette.status import HTTP_500_INTERNAL_SERVER_ERROR, HTTP_422_UNPROCESSABLE_ENTITY
 
-from .exp import CustomException, EnumException
+from .base import BaseError
+from .response import create_error_response
 
+def setup_exception_handlers(app):
+    """Setup exception handlers."""
+    app.add_exception_handler(BaseError, base_error_handler)
+    app.add_exception_handler(RequestValidationError, validation_error_handler)
+    app.add_exception_handler(Exception, unhandled_exception_handler)
 
-def exception_handler_setup(app: FastAPI):
-	@app.exception_handler(CustomException)
-	async def validation_exception_handler(request: Request, exc: CustomException):
-		return JSONResponse(
-			status_code=exc.status_code,
-			content={
-				"code": exc.code,
-				"message": exc.message,
-				"status": exc.status_code,
-			},
-			headers=exc.headers,
-		)
+async def base_error_handler(_: Request, error: BaseError) -> JSONResponse:
+    """Handler for base errors."""
+    return create_error_response(
+        message=error.message,
+        status=error.status_code,
+        detail=error.detail,
+    )
 
-	@app.exception_handler(RequestValidationError)
-	async def validation_request_handler(request: Request, exc: RequestValidationError):
-		errors = exc.errors()
+async def validation_error_handler(_: Request, error: RequestValidationError) -> JSONResponse:
+    """Handler for validation errors."""
+    details = [{"message": err["msg"], "path": list(err["loc"])} for err in error.errors()]
+    return create_error_response(
+        message="Validation error",
+        status=HTTP_422_UNPROCESSABLE_ENTITY,
+        detail=details,
+    )
 
-		if request.method == 'GET':
-			exception = EnumException.VALIDATION_QUERY_ERROR
-		else:
-			exception = EnumException.VALIDATION_ERROR
-
-		# Log the full request for more insight
-		logger.error(f"Validation error at: {request.url}")
-		logger.error(f"Request body: {await request.body()}")
-		logger.error(f"Errors: {errors}")
-
-		response_content = {
-			"code": exception.name,
-			"message": exception.value[0],
-			"details": errors,
-			"status": exception.value[1],
-		}
-
-		logger.error(response_content)
-		return JSONResponse(
-			status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
-			content=jsonable_encoder(response_content),
-		)
+async def unhandled_exception_handler(_: Request, error: Exception) -> JSONResponse:
+    """Handler for unhandled exceptions."""
+    return create_error_response(
+        message="Unhandled error occurred",
+        status=HTTP_500_INTERNAL_SERVER_ERROR,
+        detail=str(error),
+    )

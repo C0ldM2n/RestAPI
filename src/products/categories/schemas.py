@@ -4,21 +4,34 @@ from typing import Optional
 from pydantic import BaseModel, ConfigDict
 
 class CategoryBaseSchema(BaseModel):
-    parent_id: Optional[int]
-    image_url: Optional[str]
+    parent_id: Optional[int] = None
+    image_url: Optional[str] = None
     name: str
     is_active: bool
 
     model_config = ConfigDict(
         from_attributes=True)
 
-class CategoryResponseSchema(CategoryBaseSchema):
-    id: Optional[int]
+class CategoryResponseSchema(BaseModel):
+    id: int
+    parent_id: Optional[int]
+    image_url: Optional[str]
+    name: str
+    is_active: bool
+    # lft: int
+    # rgt: int
+    # level: int
     created_at: datetime
     updated_at: datetime
+
+    model_config = ConfigDict(
+        from_attributes=True)
 
 class CategoryCreateSchema(CategoryBaseSchema):
     pass
 
 class CategoryUpdateSchema(CategoryBaseSchema):
     pass
+
+class CategoryTree(BaseModel):
+    categories: list[CategoryResponseSchema]

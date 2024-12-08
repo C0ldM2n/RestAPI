@@ -1,14 +1,13 @@
-import typing
-
 from fastapi import Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from core.db.database import get_async_session
 from core.db.repository import BaseRepository
+from core.db.tree.repository import TreeRepository
 from models import Category
 
 
-class CategoryRepository(BaseRepository[Category, int]):
+class CategoryRepository(TreeRepository[Category, int]):
 	"""Repository for managing category-related queries"""
 
 	def __init__(self, *args, **kwargs) -> None:

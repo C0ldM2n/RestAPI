@@ -1,5 +1,5 @@
 # REST API | Python 3.12, FastAPI, SQLAlchemy, Pydantic and Poetry
-Writing API for the future project. Creating CRUD-operations, routers for them 
+Writing CRUD API for Postgres database. Repository for CRUD-operations, routers for them 
 and testing all the functionality with pytest (and asyncio).
 
 ## Usage
@@ -39,3 +39,30 @@ Inserting all jsons from /data folder
 
     make cli-base
 Inserting base jsons (configured in /src/core/cli/utils.py) from /data folder
+
+[//]: # (##### CLI commands for Windows &#40;using python from website&#41;)
+
+[//]: # ()
+[//]: # (    make win-cli-createdb)
+
+[//]: # (Creating database)
+
+[//]: # ()
+[//]: # (    make win-cli-dropdb)
+
+[//]: # (Drop database)
+
+[//]: # ()
+[//]: # (    make win-cli-tables)
+
+[//]: # (Creating tables in database)
+
+[//]: # ()
+[//]: # (    make win-cli-all)
+
+[//]: # (Inserting all jsons from /data folder)
+
+[//]: # ()
+[//]: # (    make win-cli-base)
+
+[//]: # (Inserting base jsons &#40;configured in /src/core/cli/utils.py&#41; from /data folder)

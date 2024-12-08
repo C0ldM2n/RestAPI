@@ -1,33 +1,30 @@
-from .exp import (
-    ValidationError,
-    ValidationQueryError,
-    DatabaseIntegrityError,
-    UnexpectedError,
-    CategoryAlreadyCreated,
-    CategoryOnThisLevelAlreadyCreated,
-    CategoryUnprocessableEntity,
-    CategoryNotFounded,
-    ProductAlreadyCreated,
+from .base import (
+    NotFoundError,
+    AlreadyExistError,
+    UnprocessableEntityError,
+    CyclicReferenceError,
+    UnexpectedError
 )
 
-ValidationExceptions = ["ValidationError", "ValidationQueryError"]
+from .validation import (
+    ValidationError,
+    ValidationQueryError,
+    DatabaseIntegrityError
+)
 
-CategoryExceptions = [
-    "CategoryAlreadyCreated",
-    "CategoryOnThisLevelAlreadyCreated",
-    "CategoryNotFounded",
-    "CategoryUnprocessableEntity"
+ValidationExceptions = [
+    "ValidationError",
+    "ValidationQueryError",
+    "DatabaseIntegrityError"
 ]
 
 __all__ = [
     "ValidationError",
     "ValidationQueryError",
     "DatabaseIntegrityError",
-    "UnexpectedError",
-    "CategoryAlreadyCreated",
-    "CategoryOnThisLevelAlreadyCreated",
-    "CategoryUnprocessableEntity",
-    "CategoryNotFounded"
+    "NotFoundError",
+    "AlreadyExistError",
+    "UnprocessableEntityError",
+    "CyclicReferenceError",
+    "UnexpectedError"
 ]
-
-ProductExceptions = ["ProductAlreadyCreated"]

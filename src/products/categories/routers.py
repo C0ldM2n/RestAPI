@@ -1,53 +1,29 @@
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, HTTPException, status, Path
+from fastapi import APIRouter, Depends, status, Path
 
 from products.categories.repository import CategoryRepository
 from products.categories.schemas import CategoryCreateSchema, CategoryUpdateSchema, CategoryResponseSchema
-from core.exceptions import CategoryAlreadyCreated, \
-	CategoryOnThisLevelAlreadyCreated, CategoryNotFounded
-from core.exceptions.exp import CategoryUnprocessableEntity
 
 router = APIRouter(
 	prefix="/categories",
 	tags=["Categories"]
 )
 
-CategoryID = Annotated[int, Path(..., alias="id")]
+CategoryID = Annotated[int, Path(..., alias="id")] # why we use this?
 CategoryRepo = Annotated[CategoryRepository, Depends(CategoryRepository.get_category_repository)]
 
-# Add validating errors
-# and read abt HTTPException
-# (abt convert ex's to HTTPException)
-
-@router.post("/categories/create", response_model=CategoryCreateSchema, status_code=status.HTTP_201_CREATED)
+@router.post("/create", response_model=CategoryCreateSchema, status_code=status.HTTP_201_CREATED)
 async def create_category(
 		data: CategoryCreateSchema,
 		category_repo: CategoryRepo
 ):
 
-	new_category = await category_repo.create(data)
+	new_category = await category_repo.create(data.model_dump())
 	return new_category
 
-	# except Exception as e:
-	# 	err_msg = str(e)
-	#
-	# 	if '"categories_pkey"' in err_msg:
-	# 		raise CategoryAlreadyCreated(data.id, data.name)
-	#
-	# 	if '"uq_name_parent_id"' in err_msg:
-	# 		raise CategoryOnThisLevelAlreadyCreated(data.parent_id, data.name)
-	#
-	# 	if 'cannot have itself as its parent' in err_msg:
-	# 		raise CategoryUnprocessableEntity(data.id, data.parent_id)
-	#
-	# 	# Handle any unexpected errors and return a 400 status code
-	# 	else:
-	# 		raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
-	# 		                    detail="An error occurred while creating the category")
 
-
-@router.get("/categories/get/{id}", response_model=CategoryResponseSchema, status_code=status.HTTP_200_OK)
+@router.get("/get/{id}", response_model=CategoryResponseSchema, status_code=status.HTTP_200_OK)
 async def get_category_by_id(
 		category_id: CategoryID,
 		category_repo: CategoryRepo
@@ -56,15 +32,9 @@ async def get_category_by_id(
 	category = await category_repo.get_by_id(category_id)
 	return category
 
-	# except Exception as e:
-	# 	err_msg = str(e)
-	# 	# Handle any unexpected errors and return a 400 status code
-	# 	print(f"Error {err_msg}")
-	# 	raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
-	# 	                    detail="An error occurred while getting the category")
+# ----- not ready -----
 
-
-@router.put("/categories/update/{id}", response_model=CategoryUpdateSchema, status_code=status.HTTP_200_OK)
+@router.put("/update/{id}", response_model=CategoryUpdateSchema, status_code=status.HTTP_200_OK)
 async def update_category(
 		category_id: CategoryID,
 		data: CategoryUpdateSchema,
@@ -72,7 +42,7 @@ async def update_category(
 ):
 
 	try:
-		category_updated = await category_repo.put(category_id, data)
+		category_updated = await category_repo.put(category_id, data.model_dump())
 		return category_updated
 
 	except Exception as e:
@@ -91,7 +61,7 @@ async def update_category(
 			                    detail="An error occurred while updating the category")
 
 
-@router.delete("/categories/delete/{id}", status_code=status.HTTP_200_OK)
+@router.delete("/delete/{id}", status_code=status.HTTP_200_OK)
 async def delete_category_by_id(
 		category_id: CategoryID,
 		category_repo: CategoryRepo
