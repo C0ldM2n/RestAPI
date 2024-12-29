@@ -9,18 +9,14 @@ from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from core.db.database import engine, session_maker
 from config import settings
 from models import Base
+from products.categories.models import Category
 
-TABLE_PRIORITY = {
-    "brands": 1,
-    "users" : 2,
-    "categories": 3,
-    "products": 4
-}
+TABLE_PRIORITY = {"brands": 1, "users": 2, "categories": 3, "products": 4}
 
 FILE_TABLE_MAPPING = {
     "brands.json": "brands",
     "categories.json": "categories",
-    "products.json": "products"
+    "products.json": "products",
 }
 
 
@@ -41,12 +37,14 @@ def get_table_model(table_name: str):
 
 async def load_json_file(file_path: Path) -> list[dict[str, Any]]:
     """Load JSON data from a file."""
-    with open(file_path, 'r') as f:
+    with open(file_path, "r") as f:
         data = f.read()
         return json.loads(data)
 
 
-async def bulk_insert_data(table_name: str, data: list[dict[str, Any]], session: AsyncSession):
+async def bulk_insert_data(
+    table_name: str, data: list[dict[str, Any]], session: AsyncSession
+):
     """Insert data into the specified table."""
     if not data:
         print(f"No data to insert for table {table_name}")
@@ -59,7 +57,9 @@ async def bulk_insert_data(table_name: str, data: list[dict[str, Any]], session:
     await session.commit()
 
 
-async def bulk_insert_data_from_files(files: list[Path], session: AsyncSession):
+async def bulk_insert_data_from_files(
+    files: list[Path], session: AsyncSession
+):
     """Insert data into tables from multiple JSON files, sorted by priority."""
     file_data = []
 
@@ -81,8 +81,11 @@ async def bulk_insert_data_from_files(files: list[Path], session: AsyncSession):
 async def bulk_insert_base_jsons():
     """Bulk insert base data like brands and categories from the base JSON files."""
     async with session_maker() as session:
-        base_jsons = ['brands.json', 'categories.json']
-        base_files = [Path("/".join([settings.BASE_DIR, 'data', json_file])) for json_file in base_jsons]
+        base_jsons = ["brands.json", "categories.json"]
+        base_files = [
+            Path("/".join([settings.BASE_DIR, "data", json_file]))
+            for json_file in base_jsons
+        ]
         await bulk_insert_data_from_files(base_files, session)
 
 
@@ -90,20 +93,23 @@ async def bulk_insert_all_jsons():
     """Bulk insert all available JSON files from the data folder."""
     async with session_maker() as session:
         data_folder = Path("/".join([settings.BASE_DIR, "data"]))
-        json_files = list(data_folder.glob('*.json'))
+        json_files = list(data_folder.glob("*.json"))
         await bulk_insert_data_from_files(json_files, session)
 
 
 async def create_database():
+    from sqlite3 import ProgrammingError
+
     db = settings.db_url.rsplit("/", maxsplit=1)
     # logging.info(settings.db_url)
     db_name = db[1]
     url = db[0] + "/postgres"
     engine_pg = create_async_engine(url, isolation_level="AUTOCOMMIT")
+    print("Category __table_args__:", Category.__table_args__)
+
     async with engine_pg.connect() as conn:
         if not db_name.isidentifier():
             raise ValueError(f'Invalid database name: "{db_name}"')
-        from sqlite3 import ProgrammingError
         try:
             logging.info(f'Creating database "{db_name}" {10 * '--'}')
             await conn.execute(text(f'CREATE DATABASE "{db_name}"'))
@@ -119,10 +125,12 @@ async def drop_database():
     db_name = db[1]
     url = db[0] + "/postgres"
     engine_pg = create_async_engine(url, isolation_level="AUTOCOMMIT")
+
     async with engine_pg.connect() as conn:
         if not db_name.isidentifier():
             raise ValueError(f'Invalid database name: "{db_name}"')
         from sqlite3 import ProgrammingError
+
         try:
             logging.info(f'Drop database "{db_name}" {10 * '--'}')
             await conn.execute(text(f'DROP DATABASE "{db_name}" WITH (FORCE)'))

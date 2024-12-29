@@ -1,30 +1,40 @@
 from .base import (
     NotFoundError,
-    AlreadyExistError,
+    AlreadyExistOnThisLevelError,
+    UniqueRootError,
     UnprocessableEntityError,
     CyclicReferenceError,
-    UnexpectedError
 )
 
 from .validation import (
     ValidationError,
     ValidationQueryError,
-    DatabaseIntegrityError
+    BadRequestError,
+    DatabaseError,
 )
 
 ValidationExceptions = [
     "ValidationError",
     "ValidationQueryError",
-    "DatabaseIntegrityError"
+    "DatabaseIntegrityError",
+]
+
+BaseExceptions = [
+    "NotFoundError",
+    "AlreadyExistError",
+    "UniqueRootError",
+    "UnprocessableEntityError",
+    "CyclicReferenceError",
 ]
 
 __all__ = [
-    "ValidationError",
-    "ValidationQueryError",
-    "DatabaseIntegrityError",
     "NotFoundError",
-    "AlreadyExistError",
+    "AlreadyExistOnThisLevelError",
+    "UniqueRootError",
     "UnprocessableEntityError",
     "CyclicReferenceError",
-    "UnexpectedError"
+    "ValidationError",
+    "ValidationQueryError",
+    "BadRequestError",
+    "DatabaseError",
 ]

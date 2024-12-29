@@ -14,9 +14,16 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from uvicorn.loops.asyncio import asyncio_setup
 
 import models
+
 # from core.cli import (bulk_insert_base, bulk_insert_all, create_database, drop_database, init_tables)
-from core.cli.utils import (create_database, drop_database, create_tables, bulk_insert_data_from_files,
-                            bulk_insert_base_jsons, bulk_insert_all_jsons)
+from core.cli.utils import (
+    create_database,
+    drop_database,
+    create_tables,
+    bulk_insert_data_from_files,
+    bulk_insert_base_jsons,
+    bulk_insert_all_jsons,
+)
 
 
 @pytest.mark.asyncio
@@ -65,8 +72,6 @@ async def test_drop_database(db_session):
 #             await bulk_insert_all_jsons()
 #     except ProgrammingError:
 #         assert True
-
-
 
 
 # @pytest.mark.asyncio

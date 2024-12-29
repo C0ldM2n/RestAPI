@@ -1,6 +1,7 @@
 from typing import Optional
 
-from pydantic import BaseModel, ConfigDict ,UUID4
+from pydantic import BaseModel, ConfigDict, UUID4
+
 
 class ProductCreate(BaseModel):
     name: str
@@ -14,5 +15,4 @@ class ProductCreate(BaseModel):
     created_by: Optional[UUID4]
     updated_by: Optional[UUID4]
 
-    model_config = ConfigDict(
-        from_attributes = True)
+    model_config = ConfigDict(from_attributes=True)

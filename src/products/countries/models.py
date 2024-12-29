@@ -12,7 +12,9 @@ if typing.TYPE_CHECKING:
 class Country(Base, TimeMixin):
     __tablename__ = "countries"
 
-    id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True, nullable=False)
+    id: Mapped[int] = mapped_column(
+        Integer, primary_key=True, index=True, nullable=False
+    )
     name: Mapped[str]
 
     brands: Mapped[list["Brand"]] = relationship(back_populates="country")

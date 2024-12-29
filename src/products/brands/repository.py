@@ -1,7 +1,8 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from core.db.repository import BaseRepository
+from core.db.repository.repository import BaseRepository
 from models import Brand
+
 
 class BrandRepository(BaseRepository[Brand, int]):
     """Repository for managing brand-related queries."""

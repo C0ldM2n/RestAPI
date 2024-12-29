@@ -3,15 +3,24 @@ from pathlib import Path
 
 import typer
 
-from .utils import (bulk_insert_data_from_files, bulk_insert_base_jsons,
-                    bulk_insert_all_jsons, create_database, drop_database, create_tables)
+from .utils import (
+    bulk_insert_data_from_files,
+    bulk_insert_base_jsons,
+    bulk_insert_all_jsons,
+    create_database,
+    drop_database,
+    create_tables,
+)
 
 app = typer.Typer()
 
 
 @app.command("bulk_insert_data_from_files")
 def bulk_insert(
-    files: list[Path] = typer.Argument(..., help="Paths to JSON files for bulk insertion.")):
+    files: list[Path] = typer.Argument(
+        ..., help="Paths to JSON files for bulk insertion."
+    )
+):
     """Bulk insert data into tables from specified JSON files."""
     try:
         bulk_insert_data_from_files(files)

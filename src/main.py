@@ -7,13 +7,11 @@ from products.categories.routers import router as router_categories
 from config import settings
 from core.exceptions.handler import setup_exception_handlers
 
-app = FastAPI(
-	title=settings.APP_NAME
-)
+app = FastAPI(title=settings.APP_NAME)
 
 # SQLAlchemy logging
 logging.basicConfig()
-logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)
+logging.getLogger("sqlalchemy.engine").setLevel(logging.INFO)
 
 
 setup_exception_handlers(app)
