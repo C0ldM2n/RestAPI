@@ -1,7 +1,6 @@
 from .base import (
     NotFoundError,
     AlreadyExistOnThisLevelError,
-    UniqueRootError,
     UnprocessableEntityError,
     CyclicReferenceError,
 )
@@ -22,7 +21,6 @@ ValidationExceptions = [
 BaseExceptions = [
     "NotFoundError",
     "AlreadyExistError",
-    "UniqueRootError",
     "UnprocessableEntityError",
     "CyclicReferenceError",
 ]
@@ -30,7 +28,6 @@ BaseExceptions = [
 __all__ = [
     "NotFoundError",
     "AlreadyExistOnThisLevelError",
-    "UniqueRootError",
     "UnprocessableEntityError",
     "CyclicReferenceError",
     "ValidationError",

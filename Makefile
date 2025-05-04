@@ -3,66 +3,51 @@ ifneq (,$(wildcard ./.env))
     export $(shell sed 's/=.*//' .env)
 endif
 
-#ifneq (,$(wildcard ./.env.test))
-#    include .env.test
-#    export $(shell sed 's/=.*//' .env.test)
-#endif
+.PHONY: setup requirements start tests makemigration migrate lint cli-createdb cli-dropdb cli-all cli-base
 
-.PHONY: start tests makemigration migrate exportpath cli-createdb cli-dropdb cli-all cli-base lint
+setup:
+	@echo "Setting up virtual environment..."
+	uv venv
+	uv sync
+
+requirements:
+	@echo "Compiling project dependencies to requirements.txt..."
+	uv pip compile pyproject.toml -o requirements.txt
 
 start:
 	@echo "Starting Uvicorn server (8001)..."
-	poetry run uvicorn src.main:app --reload --port 8001
+	uv run uvicorn src.main:app --reload --port 8001
 
 tests:
 	@echo "Running tests..."
-	poetry run pytest -p no:warnings -v tests/
+	uv run --env-file .env.test pytest -p no:warnings -v ./tests/
 
 makemigration:
 	@echo "Creating revision..."
-	poetry run alembic -c migrations/alembic.ini revision --autogenerate
+	uv run alembic -c migrations/alembic.ini revision --autogenerate
 
 migrate:
 	@echo "Migrating..."
-	poetry run alembic -c migrations/alembic.ini upgrade head
-
-exportpath:
-	export PYTHONPATH=./src
+	uv run alembic -c migrations/alembic.ini upgrade head
 
 lint:
-	poetry run black ./
-	poetry run isort ./
-	poetry run ruff check ./
-	poetry run mypy ./
+	uv tool run black ./
+	uv tool run isort ./
+	uv tool run mypy ./
+	uv tool run ruff check ./
 
-# CLI commands for Linux and macOS
+# CLI commands
 cli-createdb:
-	poetry run python3 -m src.core.cli.cli create_database
+	uv run -m src.core.cli.cli create_database
 
 cli-dropdb:
-	poetry run python3 -m src.core.cli.cli drop_database
+	uv run -m src.core.cli.cli drop_database
 
 cli-tables:
-	poetry run python3 -m src.core.cli.cli create_tables
+	uv run -m src.core.cli.cli create_tables
 
 cli-all:
-	poetry run python3 -m src.core.cli.cli bulk_insert_all_jsons
+	uv run -m src.core.cli.cli bulk_insert_all_jsons
 
 cli-base:
-	poetry run python3 -m src.core.cli.cli bulk_insert_base_jsons
-
-# Windows CLI commands
-win-cli-createdb:
-	poetry run python -m src.core.cli.cli create_database
-
-win-cli-dropdb:
-	poetry run python -m src.core.cli.cli drop_database
-
-win-cli-tables:
-	poetry run python -m src.core.cli.cli create_tables
-
-win-cli-all:
-	poetry run python -m src.core.cli.cli bulk_insert_all_jsons
-
-win-cli-base:
-	poetry run python -m src.core.cli.cli bulk_insert_base_jsons
+	uv run -m src.core.cli.cli bulk_insert_base_jsons

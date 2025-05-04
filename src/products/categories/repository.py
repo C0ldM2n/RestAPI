@@ -7,7 +7,7 @@ from core.db.tree.repository import TreeRepository
 from models import Category
 
 
-class CategoryRepository(TreeRepository[Category, int]):
+class CategoryRepository(BaseRepository[Category, int]):
     """Repository for managing category-related queries"""
 
     def __init__(self, *args, **kwargs) -> None:

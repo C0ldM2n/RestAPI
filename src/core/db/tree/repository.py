@@ -1,14 +1,13 @@
-import uuid
+from uuid import UUID
 from typing import TypeVar, Generic, Union
 
 from sqlalchemy import select, func
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from core.db.repository.handler import handling_repository_errors
-from core.exceptions import UniqueRootError
 
 Model = TypeVar("Model")
-ID = TypeVar("ID", bound=Union[uuid.UUID, int])
+ID = TypeVar("ID", bound=Union[UUID, int])
 
 
 class TreeRepository(Generic[Model, ID]):
@@ -25,18 +24,20 @@ class TreeRepository(Generic[Model, ID]):
         parent_id = data["parent_id"]
 
         try:
-            # TODO: fix uniq parent_id=null
+
             if parent_id is None:
-                # Check if a root node already exists
-                query = select(self.model).where(parent_id is None)
-                existing = await self.session.execute(
-                    select(self.model).where(self.model.parent_id is None)
-                )
-                if existing.scalar():
-                    # ?
-                    raise UniqueRootError(
-                        detail="Entity with parent_id=null already exists. Only one root node is allowed."
-                    )
+
+                # # Check if a root node already exists
+                # query = select(self.model).where(parent_id is None)
+
+                # existing = await self.session.execute(
+                #     select(self.model).where(self.model.parent_id is None)
+                # )
+                # if existing.scalar():
+                #     # ?
+                #     raise ValueError(
+                #         f"Entity with parent_id=null already exists. Only one root node is allowed."
+                #     )
 
                 # Handle root node creation
                 max_rgt = await self.session.execute(
@@ -84,7 +85,7 @@ class TreeRepository(Generic[Model, ID]):
             raise e
 
     @handling_repository_errors
-    async def get_by_id(self, node_id: ID) -> Model:
+    async def get_by_id(self, node_id: ID) -> Model | None:
         """Get a node by its ID, including parent and level information"""
         node = await self.session.get(self.model, node_id)
         return node

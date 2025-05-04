@@ -49,15 +49,6 @@ class AlreadyExistOnThisLevelError(BaseError):
         )
 
 
-class UniqueRootError(BaseError):
-    def __init__(self, *_: tuple[Any], detail: str = None) -> None:
-        super().__init__(
-            message=f"Entity with parent_id=null already exist.",
-            status_code=HTTP_422_UNPROCESSABLE_ENTITY,
-            detail=detail or {},
-        )
-
-
 class UnprocessableEntityError(BaseError):
     def __init__(self, *_: tuple[Any], detail: str = None) -> None:
         super().__init__(

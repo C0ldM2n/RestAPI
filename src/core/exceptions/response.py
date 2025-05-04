@@ -17,6 +17,7 @@ class ErrorResponse(BaseModel):
     """Error response model."""
 
     message: str = Field(description="This field represent the message")
+    # noinspection PyDataclass
     path: list = Field(
         description="The path to the field that raised the error",
         default_factory=list,

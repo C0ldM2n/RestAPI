@@ -5,8 +5,9 @@ from core.exceptions import (
     ValidationError,
     AlreadyExistOnThisLevelError,
     NotFoundError,
-    UniqueRootError,
 )
+
+from asyncpg import UniqueViolationError
 
 
 def handling_repository_errors(func):
@@ -23,25 +24,20 @@ def handling_repository_errors(func):
             # Database integrity error handling
             await self.session.rollback()
             print(e)
-            if "parent_id=null already exists" in str(e.args[0]):
-                raise UniqueRootError(detail=str(e.args[0]))
-            elif (
-                'duplicate key value violates unique constraint "uq_categories_name_level"'
-                in str(e.args[0])
-            ):
-                raise AlreadyExistOnThisLevelError(
-                    field="name", data=args[0]["name"], detail=str(e.args[0])
-                )
-            elif (
-                'duplicate key value violates unique constraint "uq_categories_sort_order_level"'
-                in str(e.args[0])
-            ):
-                raise AlreadyExistOnThisLevelError(
-                    field="sort_order",
-                    data=args[0]["sort_order"],
-                    detail=str(e.args[0]),
-                )
 
+            if f"duplicate key value" in str(e.args[0]):
+                if f"name_level" in str(e.args[0]):
+                    raise AlreadyExistOnThisLevelError(
+                        field="name",
+                        data=args[0]["name"],
+                        detail=str(e.args[0]),
+                    )
+                elif f"sort_order_level" in str(e.args[0]):
+                    raise AlreadyExistOnThisLevelError(
+                        field="sort_order",
+                        data=args[0]["sort_order"],
+                        detail=str(e.args[0]),
+                    )
             else:
                 raise DatabaseError(detail=str(e.args[0]))
 

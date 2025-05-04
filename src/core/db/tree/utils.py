@@ -1,6 +1,11 @@
+from typing import TypeVar, Union
+from uuid import UUID
+
 from sqlalchemy import select
 from sqlalchemy.schema import Table
 from sqlalchemy.ext.asyncio import AsyncSession
+
+ID = TypeVar("ID", bound=Union[UUID, int])
 
 
 async def is_descendant_of(
@@ -30,3 +35,21 @@ async def is_descendant_of(
 #         if current_parent is None:
 #             break
 #         current_parent_id = current_parent.parent_id
+
+
+async def validate_no_cycless(self, pk: ID, new_parent_id: ID) -> None:
+    """Ensure there are no cyclic references in the hierarchy."""
+    query = select(self.model.parent_id).where(new_parent_id == self.model.id)
+    parent = await self.session.execute(query)
+    if parent == pk:
+        raise ValueError("Cyclic reference detected in the hierarchy.")
+    else:
+        pass
+
+    # while old_parent_id is not None:
+    #     if old_parent_id == pk:
+    #         raise ValueError("Cyclic reference detected in the hierarchy.")
+    #     current_parent = await self.session.get(self.model, old_parent_id)
+    #     if current_parent is None:
+    #         break  # Parent doesn't exist (which is fine), so break the loop
+    #     old_parent_id = getattr(current_parent, parent_id_attr_name)
