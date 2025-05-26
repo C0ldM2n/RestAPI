@@ -3,31 +3,31 @@ ifneq (,$(wildcard ./.env))
     export $(shell sed 's/=.*//' .env)
 endif
 
-.PHONY: setup requirements start tests makemigration migrate lint cli-createdb cli-dropdb cli-all cli-base
+.PHONY: setup requirements start tests makemigration migrate lint db-create db-drop db-all db-base
 
 setup:
-	@echo "Setting up virtual environment..."
+	@echo "Setting up virtual environment.."
 	uv venv
 	uv sync
 
 requirements:
-	@echo "Compiling project dependencies to requirements.txt..."
+	@echo "Compiling project dependencies to requirements.txt.."
 	uv pip compile pyproject.toml -o requirements.txt
 
 start:
-	@echo "Starting Uvicorn server (8001)..."
+	@echo "Starting Uvicorn server (8001).."
 	uv run uvicorn src.main:app --reload --port 8001
 
 tests:
-	@echo "Running tests..."
+	@echo "Running tests.."
 	uv run --env-file .env.test pytest -p no:warnings -v ./tests/
 
 makemigration:
-	@echo "Creating revision..."
+	@echo "Creating revision.."
 	uv run alembic -c migrations/alembic.ini revision --autogenerate
 
 migrate:
-	@echo "Migrating..."
+	@echo "Migrating.."
 	uv run alembic -c migrations/alembic.ini upgrade head
 
 lint:
@@ -36,18 +36,18 @@ lint:
 	uv tool run mypy ./
 	uv tool run ruff check ./
 
-# CLI commands
-cli-createdb:
+# DB commands
+db-create:
 	uv run -m src.core.cli.cli create_database
 
-cli-dropdb:
+db-drop:
 	uv run -m src.core.cli.cli drop_database
 
-cli-tables:
+db-tables:
 	uv run -m src.core.cli.cli create_tables
 
-cli-all:
+db-all:
 	uv run -m src.core.cli.cli bulk_insert_all_jsons
 
-cli-base:
+db-base:
 	uv run -m src.core.cli.cli bulk_insert_base_jsons

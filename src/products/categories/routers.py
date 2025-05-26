@@ -11,7 +11,7 @@ from products.categories.schemas import (
 
 router = APIRouter(prefix="/categories", tags=["Categories"])
 
-CategoryID = Annotated[int, Path(..., alias="id")]  # why we use this?
+CategoryID = Annotated[int, Path(..., alias="id")]
 CategoryRepo = Annotated[
     CategoryRepository, Depends(CategoryRepository.get_category_repository)
 ]
@@ -19,14 +19,13 @@ CategoryRepo = Annotated[
 
 @router.post(
     "/",
-    response_model=CategoryCreateSchema,
+    response_model=CategoryResponseSchema,
     status_code=status.HTTP_201_CREATED,
 )
 async def create_category(
-    data: CategoryCreateSchema, category_repo: CategoryRepo
+        data: CategoryCreateSchema, category_repo: CategoryRepo
 ):
-
-    new_category = await category_repo.create(data.model_dump())
+    new_category = await category_repo.create(data)
     return new_category
 
 
@@ -35,56 +34,33 @@ async def create_category(
     response_model=CategoryResponseSchema,
     status_code=status.HTTP_200_OK,
 )
-async def get_category_by_id(
-    category_id: CategoryID, category_repo: CategoryRepo
+async def get_category(
+        category_id: CategoryID, category_repo: CategoryRepo
 ):
-
-    category = await category_repo.get_by_id(category_id)
+    category = await category_repo.read(category_id)
     return category
 
 
 @router.put(
     "/{id}",
-    response_model=CategoryUpdateSchema,
+    response_model=CategoryResponseSchema,
     status_code=status.HTTP_200_OK,
 )
 async def update_category(
-    category_id: CategoryID,
-    data: CategoryUpdateSchema,
-    category_repo: CategoryRepo,
+        category_id: CategoryID,
+        data: CategoryUpdateSchema,
+        category_repo: CategoryRepo,
 ):
-
-    updated_category = await category_repo.put(category_id, data.model_dump())
+    updated_category = await category_repo.update(category_id, data)
     return updated_category
 
-    # try:
-    #     category_updated = await category_repo.put(
-    #         category_id, data.model_dump()
-    #     )
-    #     return category_updated
-    #
-    # except Exception as e:
-    #     err_msg = str(e)
-    #
-    #     if "cannot have itself as its parent" in err_msg:
-    #         raise CategoryUnprocessableEntity(data.id, data.parent_id)
-    #
-    #     if "Item not found" in err_msg:
-    #         raise CategoryNotFounded(category_id)
-    #
-    #     # Handle any unexpected errors and return a 400 status code
-    #     else:
-    #         print(f"Error {err_msg}")
-    #         raise HTTPException(
-    #             status_code=status.HTTP_400_BAD_REQUEST,
-    #             detail="An error occurred while updating the category",
-    #         )
 
-
-@router.delete("/{id}", status_code=status.HTTP_204_NO_CONTENT)
-async def delete_category_by_id(
-    category_id: CategoryID, category_repo: CategoryRepo
+@router.delete(
+    "/{id}",
+    status_code=status.HTTP_204_NO_CONTENT
+)
+async def delete_category(
+        category_id: CategoryID, category_repo: CategoryRepo
 ):
-
-    await category_repo.delete_by_id(category_id)
+    await category_repo.delete(category_id)
     return

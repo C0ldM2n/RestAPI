@@ -27,18 +27,18 @@ Upgrading to head revision
     make lint
 Linter project
 
-#### CLI commands
-    make cli-createdb
+#### DB cli commands
+    make db-create
 Creating database
 
-    make cli-dropdb
+    make db-drop
 Drop database
 
-    make cli-tables
+    make db-tables
 Creating tables in database
 
-    make cli-all
+    make db-all
 Inserting all jsons from /data folder
 
-    make cli-base
+    make db-base
 Inserting base jsons (configured in /src/core/cli/utils.py) from /data folder

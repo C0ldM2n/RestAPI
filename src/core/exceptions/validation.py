@@ -6,7 +6,7 @@ from starlette.status import (
     HTTP_500_INTERNAL_SERVER_ERROR,
 )
 
-from .base import BaseError
+from core.exceptions.base import BaseError
 
 
 class ValidationError(BaseError):

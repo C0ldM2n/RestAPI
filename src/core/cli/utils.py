@@ -8,7 +8,7 @@ from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 
 from core.db.database import engine, session_maker
 from config import settings
-from models import Base
+from models import BaseModel
 from products.categories.models import Category
 
 TABLE_PRIORITY = {"brands": 1, "users": 2, "categories": 3, "products": 4}
@@ -142,6 +142,6 @@ async def drop_database():
 
 async def create_tables():
     async with engine.begin() as conn:
-        await conn.run_sync(Base.metadata.drop_all)
-        await conn.run_sync(Base.metadata.create_all)
+        await conn.run_sync(BaseModel.metadata.drop_all)
+        await conn.run_sync(BaseModel.metadata.create_all)
     await engine.dispose()

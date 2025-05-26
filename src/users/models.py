@@ -4,13 +4,13 @@ import uuid
 from sqlalchemy import UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from core.db import Base, TimeMixin
+from core.db import BaseModel, TimeMixin
 
 if typing.TYPE_CHECKING:
     from products.brands.models import Brand
 
 
-class User(Base, TimeMixin):
+class User(BaseModel, TimeMixin):
     __tablename__ = "users"
 
     id: Mapped[UUID] = mapped_column(

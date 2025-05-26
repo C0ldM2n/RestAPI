@@ -15,7 +15,7 @@ from sqlalchemy import text
 
 import config as conf
 from config import Settings
-from models import Base
+from models import BaseModel
 
 
 @pytest.fixture()
@@ -47,8 +47,8 @@ async def db_session(
 
     # TODO : REALIZE THIS
     async with engine.begin() as conn:
-        await conn.run_sync(Base.metadata.drop_all)
-        await conn.run_sync(Base.metadata.create_all)
+        await conn.run_sync(BaseModel.metadata.drop_all)
+        await conn.run_sync(BaseModel.metadata.create_all)
 
     yield session
 

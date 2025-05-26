@@ -1,11 +1,10 @@
 from fastapi import Request
-from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
 from fastapi.exceptions import RequestValidationError
 from starlette import status
 
-from .base import BaseError
-from .response import ErrorResponseMulti, ErrorResponse
+from core.exceptions.base import BaseError
+from core.exceptions.responses import ErrorResponseMulti, ErrorResponse
 
 
 def setup_exception_handlers(app):
@@ -42,13 +41,13 @@ def python_base_error_handler(_: Request, error: Exception) -> JSONResponse:
     )
 
     return JSONResponse(
-        content=jsonable_encoder(response.model_dump(by_alias=True)),
+        content=response.model_dump(by_alias=True),
         status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
     )
 
 
 def pydantic_validation_errors_handler(
-    _: Request, error: RequestValidationError
+        _: Request, error: RequestValidationError
 ) -> JSONResponse:
     """This function is called if the Pydantic validation error was raised."""
 
@@ -63,6 +62,6 @@ def pydantic_validation_errors_handler(
     )
 
     return JSONResponse(
-        content=jsonable_encoder(response.model_dump(by_alias=True)),
+        content=response.model_dump(by_alias=True),
         status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
     )

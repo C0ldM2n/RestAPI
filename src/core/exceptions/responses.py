@@ -17,17 +17,16 @@ class ErrorResponse(BaseModel):
     """Error response model."""
 
     message: str = Field(description="This field represent the message")
-    # noinspection PyDataclass
     path: list = Field(
         description="The path to the field that raised the error",
         default_factory=list,
     )
-    detail: str = Field(
-        description="The detail of the error", default_factory=str
+    detail: dict | str = Field(
+        description="The detail of the error", default_factory=dict
     )
 
 
 class ErrorResponseMulti(BaseModel):
-    """The public error respnse model that includes multiple objects."""
+    """The public error response model that includes multiple objects."""
 
     errors: conlist(ErrorResponse, min_length=1)

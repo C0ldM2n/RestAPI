@@ -14,7 +14,7 @@ from logging.config import fileConfig
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'src')))
 
 from config import settings as base_config
-from models import Base
+from models import BaseModel
 
 alembic_config = context.config
 
@@ -25,7 +25,7 @@ alembic_config.set_main_option("sqlalchemy.url", base_config.db_url)
 if alembic_config.config_file_name is not None:
     fileConfig(alembic_config.config_file_name)
 
-target_metadata = Base.metadata
+target_metadata = BaseModel.metadata
 logger = getLogger("alembic.env")
 
 for i in target_metadata.tables:

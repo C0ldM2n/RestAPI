@@ -3,14 +3,14 @@ import typing
 from sqlalchemy import String, Integer, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from core.db import Base
+from core.db import BaseModel
 
 if typing.TYPE_CHECKING:
     from products.products.models import Product
     from products.countries.models import Country
 
 
-class Brand(Base):
+class Brand(BaseModel):
     __tablename__ = "brands"
 
     id: Mapped[int] = mapped_column(

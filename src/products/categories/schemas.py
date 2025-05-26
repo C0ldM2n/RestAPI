@@ -21,9 +21,6 @@ class CategoryResponseSchema(BaseModel):
     name: str
     is_active: bool
     sort_order: int
-    lft: int
-    rgt: int
-    level: int
     created_at: datetime
     updated_at: datetime
 

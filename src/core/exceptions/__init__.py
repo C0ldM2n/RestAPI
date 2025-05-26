@@ -1,6 +1,7 @@
 from .base import (
     NotFoundError,
     AlreadyExistOnThisLevelError,
+    ForeignKeyConstraintViolationError,
     UnprocessableEntityError,
     CyclicReferenceError,
 )
@@ -21,6 +22,7 @@ ValidationExceptions = [
 BaseExceptions = [
     "NotFoundError",
     "AlreadyExistError",
+    "ForeignKeyConstraintViolationError",
     "UnprocessableEntityError",
     "CyclicReferenceError",
 ]
@@ -28,6 +30,7 @@ BaseExceptions = [
 __all__ = [
     "NotFoundError",
     "AlreadyExistOnThisLevelError",
+    "ForeignKeyConstraintViolationError",
     "UnprocessableEntityError",
     "CyclicReferenceError",
     "ValidationError",
