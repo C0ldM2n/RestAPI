@@ -3,13 +3,13 @@ from typing import Optional, TYPE_CHECKING
 from sqlalchemy import Integer, String, Boolean, UniqueConstraint, CheckConstraint
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from core.db import BaseModel, TreeMixin, TimeMixin, UserMixin
+from core.db import BaseModel, TreeMixin, TimestampMixin, UserMixin
 
 if TYPE_CHECKING:
     from products.products.models import Product
 
 
-class Category(BaseModel, TreeMixin, TimeMixin, UserMixin):
+class Category(BaseModel, TreeMixin, TimestampMixin, UserMixin):
     __tablename__ = "categories"
 
     # Define category columns
@@ -26,9 +26,16 @@ class Category(BaseModel, TreeMixin, TimeMixin, UserMixin):
 
     # Unique constraints for table
     __table_args__ = (
-        CheckConstraint("id != parent_id", name="ck_category_id_not_parent_id"),
-        UniqueConstraint("name", "parent_id", name="uq_categories_name_level"),
+        CheckConstraint(
+            "id != parent_id",
+            name="ck_category_id_not_parent_id"
+        ),
         UniqueConstraint(
-            "sort_order", "parent_id", name="uq_categories_sort_order_level"
+            "name", "parent_id",
+            name="uq_categories_name_level"
+        ),
+        UniqueConstraint(
+            "sort_order", "parent_id",
+            name="uq_categories_sort_order_level"
         ),
     )

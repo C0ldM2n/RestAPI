@@ -3,12 +3,12 @@ import uuid
 from sqlalchemy import ForeignKey, String, UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from core.db import BaseModel, TimeMixin
+from core.db import BaseModel, TimestampMixin
 from products.brands.models import Brand
 from products.categories.models import Category
 
 
-class Product(BaseModel, TimeMixin):
+class Product(BaseModel, TimestampMixin):
     __tablename__ = "products"
 
     id: Mapped[UUID] = mapped_column(

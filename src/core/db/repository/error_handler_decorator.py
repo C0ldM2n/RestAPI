@@ -16,13 +16,6 @@ def handling_repository_errors(
         handle_validation: bool = True,
         handle_not_found: bool = True,
 ):
-    """
-    Декоратор‑фабрика: по флагам решает, какие ошибки ловить.
-    handle_integrity  — IntegrityError → AlreadyExistOnThisLevel/DatabaseError
-    handle_validation — ValueError → UnprocessableEntityError
-    handle_not_found  — result is None → NotFoundError
-    """
-
     def decorator(func):
         @wraps(func)
         async def wrapper(self, *args, **kwargs):
@@ -64,14 +57,14 @@ def handling_repository_errors(
                 raise DatabaseError(detail=detail)
 
             except ValueError as e:
-                detail=str(e)
+                detail = str(e)
                 await self._session.rollback()
                 if not handle_validation:
                     raise
                 raise UnprocessableEntityError(detail=detail)
 
             except Exception as e:
-                detail=str(e)
+                detail = str(e)
                 await self._session.rollback()
                 if isinstance(e, NotFoundError):
                     raise

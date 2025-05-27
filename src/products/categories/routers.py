@@ -2,7 +2,8 @@ from typing import Annotated
 
 from fastapi import APIRouter, Depends, status, Path
 
-from products.categories.repository import CategoryRepository
+from core.db.repository.repository_factory import RepositoryFactory
+from models import Category
 from products.categories.schemas import (
     CategoryCreateSchema,
     CategoryUpdateSchema,
@@ -12,9 +13,6 @@ from products.categories.schemas import (
 router = APIRouter(prefix="/categories", tags=["Categories"])
 
 CategoryID = Annotated[int, Path(..., alias="id")]
-CategoryRepo = Annotated[
-    CategoryRepository, Depends(CategoryRepository.get_category_repository)
-]
 
 
 @router.post(
@@ -23,9 +21,11 @@ CategoryRepo = Annotated[
     status_code=status.HTTP_201_CREATED,
 )
 async def create_category(
-        data: CategoryCreateSchema, category_repo: CategoryRepo
+        data: CategoryCreateSchema,
+        factory: RepositoryFactory = Depends(RepositoryFactory)
 ):
-    new_category = await category_repo.create(data)
+    repo = factory(Category)
+    new_category = await repo.create(data)
     return new_category
 
 
@@ -34,10 +34,12 @@ async def create_category(
     response_model=CategoryResponseSchema,
     status_code=status.HTTP_200_OK,
 )
-async def get_category(
-        category_id: CategoryID, category_repo: CategoryRepo
+async def read_category(
+        category_id: CategoryID,
+        factory: RepositoryFactory = Depends(RepositoryFactory)
 ):
-    category = await category_repo.read(category_id)
+    repo = factory(Category)
+    category = await repo.read(category_id)
     return category
 
 
@@ -49,9 +51,10 @@ async def get_category(
 async def update_category(
         category_id: CategoryID,
         data: CategoryUpdateSchema,
-        category_repo: CategoryRepo,
+        factory: RepositoryFactory = Depends(RepositoryFactory)
 ):
-    updated_category = await category_repo.update(category_id, data)
+    repo = factory(Category)
+    updated_category = await repo.update(category_id, data)
     return updated_category
 
 
@@ -60,7 +63,9 @@ async def update_category(
     status_code=status.HTTP_204_NO_CONTENT
 )
 async def delete_category(
-        category_id: CategoryID, category_repo: CategoryRepo
+        category_id: CategoryID,
+        factory: RepositoryFactory = Depends(RepositoryFactory)
 ):
-    await category_repo.delete(category_id)
+    repo = factory(Category)
+    await repo.delete(category_id)
     return

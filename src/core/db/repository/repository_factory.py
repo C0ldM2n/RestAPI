@@ -9,6 +9,11 @@ from core.db.repository.base_repository import BaseRepository
 
 
 class RepositoryFactory:
-    @staticmethod
-    def create(_model: Type[BaseModel], session: AsyncSession = Depends(get_async_session)):
-        return BaseRepository(_model, session)
+    def __init__(
+            self,
+            session: AsyncSession = Depends(get_async_session)
+    ):
+        self._session = session
+
+    def __call__(self, model: Type[BaseModel]) -> BaseRepository:
+        return BaseRepository(model, self._session)

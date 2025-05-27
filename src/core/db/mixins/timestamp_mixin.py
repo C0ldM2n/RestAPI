@@ -4,7 +4,7 @@ from sqlalchemy.orm import declarative_mixin, mapped_column, declared_attr, Mapp
 
 # noinspection PyMethodParameters
 @declarative_mixin
-class TimeMixin:
+class TimestampMixin:
 
     @declared_attr
     def created_at(cls) -> Mapped[DateTime]:

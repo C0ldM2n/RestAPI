@@ -1,14 +1,11 @@
 # TODO: refactor all with SOLID
-# TODO: add constraints mixin functional
-# TODO: write a fabric for repositories
+# TODO: router factory
+# TODO: check exceptions code
 # TODO: add logging
 # TODO: fix cli
 
-# DONE: clean routers
-# TODO: @transaction decorator
-
 # TODO: add docstrings
-# TODO: handling internal server right
+# TODO: handling internal server exception right
 # TODO: raise 500
 
 # TODO: put api in the docker
