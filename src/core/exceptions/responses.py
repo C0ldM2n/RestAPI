@@ -22,7 +22,7 @@ class ErrorResponse(BaseModel):
         default_factory=list,
     )
     detail: dict | str = Field(
-        description="The detail of the error", default_factory=dict
+        description="The detail of the error", default_factory=str
     )
 
 

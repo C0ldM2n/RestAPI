@@ -3,8 +3,8 @@ from sqlalchemy import delete
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from core.db.repository import Model, ID
-from core.db.repository.error_handler_decorator import handling_repository_errors
 from core.db.repository.interfaces import IRepository
+from core.db.repository.error_converter import convert_db_errors
 
 
 class BaseRepository(IRepository[Model, ID]):
@@ -12,7 +12,7 @@ class BaseRepository(IRepository[Model, ID]):
         self._model = model
         self._session = session
 
-    @handling_repository_errors()
+    @convert_db_errors()
     async def create(self, data: BaseModel) -> Model:
         payload = data.model_dump()
         instance = self._model(**payload)
@@ -21,12 +21,12 @@ class BaseRepository(IRepository[Model, ID]):
         await self._session.refresh(instance)
         return instance
 
-    @handling_repository_errors()
+    @convert_db_errors()
     async def read(self, pk: ID) -> Model:
         obj = await self._session.get(self._model, pk)
         return obj
 
-    @handling_repository_errors()
+    @convert_db_errors()
     async def update(self, pk: ID, data: BaseModel) -> Model:
         payload = data.model_dump()
         obj = await self._session.get(self._model, pk)

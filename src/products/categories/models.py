@@ -28,7 +28,7 @@ class Category(BaseModel, TreeMixin, TimestampMixin, UserMixin):
     __table_args__ = (
         CheckConstraint(
             "id != parent_id",
-            name="ck_category_id_not_parent_id"
+            name="ck_categories_id_parent_id_not_self"
         ),
         UniqueConstraint(
             "name", "parent_id",

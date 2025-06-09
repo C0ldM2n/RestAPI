@@ -22,7 +22,7 @@ class BaseError(Exception):
     ) -> None:
         self.message: str = message
         self.status_code: int = status_code
-        self.detail: dict | None = detail
+        self.detail: dict | str | None = detail
 
         super().__init__(message)
 
@@ -43,7 +43,7 @@ class AlreadyExistOnThisLevelError(BaseError):
             self, *_: tuple[Any], field: str, data: str | int, detail: str = None
     ) -> None:
         super().__init__(
-            message=f"Entity with {field} '{data}' on this level already exist.",
+            message=f"Entity with {field} '{data}' on this level already exists.",
             status_code=HTTP_409_CONFLICT,
             detail=detail or {},
         )
@@ -60,7 +60,7 @@ class ForeignKeyConstraintViolationError(BaseError):
         )
 
 
-class UnprocessableEntityError(BaseError):
+class SelfParentError(BaseError):
     def __init__(self, *_: tuple[Any], detail: str = None) -> None:
         super().__init__(
             message=f"Entity can't be it's own parent.",
@@ -74,5 +74,14 @@ class CyclicReferenceError(BaseError):
         super().__init__(
             message=f"Entity can't be it's own child.",
             status_code=HTTP_422_UNPROCESSABLE_ENTITY,
+            detail=detail or {},
+        )
+
+
+class DatabaseError(BaseError):
+    def __init__(self, *_: tuple[Any], detail: str = None) -> None:
+        super().__init__(
+            message=f"Database error.",
+            status_code=HTTP_500_INTERNAL_SERVER_ERROR,
             detail=detail or {},
         )
