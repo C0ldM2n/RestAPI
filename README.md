@@ -1,33 +1,41 @@
 # REST API | Python 3.12, FastAPI, SQLAlchemy, Pydantic and uv
-Writing CRUD API for Postgres database. Repository for CRUD-operations, routers for them 
+
+Writing CRUD API for Postgres database. Repository for CRUD-operations, routers for them
 and testing all the functionality with pytest (and asyncio).
 
 ## Usage
+
 **Required:**
+
 * configured .env file (for tests .env.test)
 * Postgres database
 * and use make commands
 
-### Makefile commands:
-    make start
-Starting Uvicorn server with --reload and on port 8001
+### Makefile commands
 
     make setup
 Setting up virtual environment with uv
 
+    make create-requirements
+Compiling project dependencies to requirements.txt
+
+    make start
+Starting Uvicorn server with --reload and on port 8001
+
     make tests
 Running tests from /tests folder
 
-    make makemigration
+    make create-revision
 Creating a database revision
 
-    make migrate
+    make migrate-head
 Upgrading to head revision
 
     make lint
 Linter project
 
 #### DB cli commands
+
     make db-create
 Creating database
 

@@ -17,6 +17,7 @@
 
 - [x] Handling internal server exception right
 - [ ] Document all errors
+- [ ] Document database connect error
 - [ ] Docstrings
 
 ### Authorization
@@ -24,7 +25,6 @@
 - [ ] JWT generation
 - [ ] JWT checking
 - [ ] Requests authorization requirements
-
 
 - [ ] Exception details (show only required data)
 - [ ] Docker

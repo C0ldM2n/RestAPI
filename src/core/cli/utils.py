@@ -1,8 +1,8 @@
 import json
-import logging
 from typing import Any
 from pathlib import Path
 
+from loguru import logger
 from sqlalchemy import insert, text
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 
@@ -101,7 +101,6 @@ async def create_database():
     from sqlite3 import ProgrammingError
 
     db = settings.db_url.rsplit("/", maxsplit=1)
-    # logging.info(settings.db_url)
     db_name = db[1]
     url = db[0] + "/postgres"
     engine_pg = create_async_engine(url, isolation_level="AUTOCOMMIT")
@@ -111,7 +110,7 @@ async def create_database():
         if not db_name.isidentifier():
             raise ValueError(f'Invalid database name: "{db_name}"')
         try:
-            logging.info(f'Creating database "{db_name}" {10 * '--'}')
+            logger.info(f'Creating database "{db_name}" {10 * '--'}')
             await conn.execute(text(f'CREATE DATABASE "{db_name}"'))
         except ProgrammingError:
             print(f'Database "{db_name}" already exists')
@@ -121,7 +120,6 @@ async def create_database():
 
 async def drop_database():
     db = settings.db_url.rsplit("/", maxsplit=1)
-    # logging.info(settings.db_url)
     db_name = db[1]
     url = db[0] + "/postgres"
     engine_pg = create_async_engine(url, isolation_level="AUTOCOMMIT")
@@ -132,7 +130,7 @@ async def drop_database():
         from sqlite3 import ProgrammingError
 
         try:
-            logging.info(f'Drop database "{db_name}" {10 * '--'}')
+            logger.info(f'Drop database "{db_name}" {10 * '--'}')
             await conn.execute(text(f'DROP DATABASE "{db_name}" WITH (FORCE)'))
         except ProgrammingError:
             print(f'Database "{db_name}" not found')

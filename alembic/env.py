@@ -11,7 +11,9 @@ from alembic import context
 from logging import getLogger
 from logging.config import fileConfig
 
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'src')))
+sys.path.append(
+    os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "src"))
+)
 
 from config import settings as base_config
 from models import BaseModel
@@ -29,7 +31,9 @@ target_metadata = BaseModel.metadata
 logger = getLogger("alembic.env")
 
 for i in target_metadata.tables:
-    logger.info(f"     - Table name: {i}", )
+    logger.info(
+        f"     - Table name: {i}",
+    )
 
 
 # other values from the config, defined by the needs of env.py,

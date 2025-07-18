@@ -5,11 +5,14 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 class Settings(BaseSettings):
     APP_NAME: str = "REST API"
+    VERSION: str = "0.1.0"
+
+    DEBUG: bool = True
+
+    ROOT_PATH: str = "/src/"
     BASE_DIR: str = str(Path(__file__).resolve().parent.parent)
     TCP_PORT: int = 8000
-    VERSION: str = "0.1.0"
-    DEBUG: bool = True
-    ROOT_PATH: str = "/src/"
+
     POSTGRES_HOST: str = ""
     POSTGRES_PORT: str = "5432"
     POSTGRES_DB: str = ""

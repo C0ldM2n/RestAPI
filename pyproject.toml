@@ -2,7 +2,9 @@
 name = "RestAPI"
 version = "0.1.0"
 description = "Restful API on FastAPI for ECommerce"
-authors = ["coldman", "kostya12362"]
+authors = [
+    { name = "Kostiantyn Durlov", email = "68183908+C0ldM2n@users.noreply.github.com" },
+]
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
@@ -41,7 +43,52 @@ select = ["E", "F"]
 ignore = []
 
 # Allow autofix for all enabled rules (when `--fix`) is provided.
-fixable = ["A", "B", "C", "D", "E", "F", "G", "I", "N", "Q", "S", "T", "W", "ANN", "ARG", "BLE", "COM", "DJ", "DTZ", "EM", "ERA", "EXE", "FBT", "ICN", "INP", "ISC", "NPY", "PD", "PGH", "PIE", "PL", "PT", "PTH", "PYI", "RET", "RSE", "RUF", "SIM", "SLF", "TCH", "TID", "TRY", "UP", "YTT"]
+fixable = [
+    "A",
+    "B",
+    "C",
+    "D",
+    "E",
+    "F",
+    "G",
+    "I",
+    "N",
+    "Q",
+    "S",
+    "T",
+    "W",
+    "ANN",
+    "ARG",
+    "BLE",
+    "COM",
+    "DJ",
+    "DTZ",
+    "EM",
+    "ERA",
+    "EXE",
+    "FBT",
+    "ICN",
+    "INP",
+    "ISC",
+    "NPY",
+    "PD",
+    "PGH",
+    "PIE",
+    "PL",
+    "PT",
+    "PTH",
+    "PYI",
+    "RET",
+    "RSE",
+    "RUF",
+    "SIM",
+    "SLF",
+    "TCH",
+    "TID",
+    "TRY",
+    "UP",
+    "YTT",
+]
 unfixable = []
 
 # Allow unused variables when underscore-prefixed.
@@ -114,45 +161,31 @@ line-length = 79
 
 # MyPy configuration
 [tool.mypy]
-plugins = [
-    "pydantic.mypy"
-]
+plugins = ["pydantic.mypy"]
 python_version = '3.12'
 
 # Add the 'src' directory to the module search path
 mypy_path = ['src']
 
 # Specify the directories to check
-files = [
-    'src',
-    'tests',
-]
+files = ['src', 'tests']
 
 warn_redundant_casts = true
 warn_unused_ignores = true
 show_error_codes = true
 explicit_package_bases = true
 
-exclude = [
-    "migrations",
-    "simulator",
-    "anomaly_detector",
-    "estimator",
-]
+exclude = ["migrations", "simulator", "anomaly_detector", "estimator"]
 
 # Suppress type import errors
 follow_imports = 'silent'
 
 [[tool.mypy.overrides]]
-module = [
-    "websockets.exceptions",
-]
+module = ["websockets.exceptions"]
 ignore_missing_imports = true
 
 [tool.pytest.ini_options]
-pythonpath = [
-    ".", "src",
-]
+pythonpath = [".", "src"]
 addopts = '-s -v --cache-clear'
 python_functions = 'test_* *_test'
 asyncio_mode = "auto"
@@ -161,8 +194,4 @@ log_cli_level = "DEBUG"
 log_cli_format = "%(asctime)s %(levelname)s %(message)s"
 
 [tool.coverage.run]
-omit = [
-    "*/conftest.py",
-    "*/test_*.py",
-    "*/migrations/",
-]
+omit = ["*/conftest.py", "*/test_*.py", "*/migrations/"]

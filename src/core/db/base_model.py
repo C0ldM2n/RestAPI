@@ -1,4 +1,4 @@
-import uuid
+from uuid import UUID
 
 from sqlalchemy.orm import DeclarativeBase
 
@@ -6,4 +6,4 @@ from sqlalchemy.orm import DeclarativeBase
 class BaseModel(DeclarativeBase):
     __allow_unmapped__ = True
 
-    id: int | uuid.UUID
+    id: int | UUID

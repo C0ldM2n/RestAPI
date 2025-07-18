@@ -3,7 +3,7 @@ from pathlib import Path
 
 import typer
 
-from .utils import (
+from core.cli.utils import (
     bulk_insert_data_from_files,
     bulk_insert_base_jsons,
     bulk_insert_all_jsons,

@@ -14,11 +14,11 @@ class BaseError(Exception):
     """Base class for custom errors."""
 
     def __init__(
-            self,
-            *_: tuple[Any],
-            message: str,
-            status_code: int = HTTP_400_BAD_REQUEST,
-            detail: dict = None,
+        self,
+        *_: tuple[Any],
+        message: str,
+        status_code: int = HTTP_400_BAD_REQUEST,
+        detail: dict = None,
     ) -> None:
         self.message: str = message
         self.status_code: int = status_code
@@ -29,7 +29,7 @@ class BaseError(Exception):
 
 class NotFoundError(BaseError):
     def __init__(
-            self, *_: tuple[Any], pk: int | UUID, detail: str = None
+        self, *_: tuple[Any], pk: int | UUID, detail: str = None
     ) -> None:
         super().__init__(
             message=f"Entity with id {pk} not found.",
@@ -40,7 +40,7 @@ class NotFoundError(BaseError):
 
 class AlreadyExistOnThisLevelError(BaseError):
     def __init__(
-            self, *_: tuple[Any], field: str, data: str | int, detail: str = None
+        self, *_: tuple[Any], field: str, data: str | int, detail: str = None
     ) -> None:
         super().__init__(
             message=f"Entity with {field} '{data}' on this level already exists.",
@@ -51,7 +51,7 @@ class AlreadyExistOnThisLevelError(BaseError):
 
 class ForeignKeyConstraintViolationError(BaseError):
     def __init__(
-            self, *_: tuple[Any], field: str, data: str | int, detail: str = None
+        self, *_: tuple[Any], field: str, data: str | int, detail: str = None
     ) -> None:
         super().__init__(
             message=f"Foreign key {field} '{data}' not found.",

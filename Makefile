@@ -3,6 +3,8 @@ ifneq (,$(wildcard ./.env))
     export $(shell sed 's/=.*//' .env)
 endif
 
+export PYTHONPATH := src
+
 .PHONY: setup requirements start tests makemigration migrate lint db-create db-drop db-all db-base
 
 setup:
@@ -10,7 +12,7 @@ setup:
 	uv venv
 	uv sync
 
-requirements:
+create-requirements:
 	@echo "Compiling project dependencies to requirements.txt.."
 	uv pip compile pyproject.toml -o requirements.txt
 
@@ -22,13 +24,13 @@ tests:
 	@echo "Running tests.."
 	uv run --env-file .env.test pytest -p no:warnings -v ./tests/
 
-makemigration:
+create-revision:
 	@echo "Creating revision.."
-	uv run alembic -c migrations/alembic.ini revision --autogenerate
+	uv run alembic -c alembic/alembic.ini revision --autogenerate
 
-migrate:
+migrate-head:
 	@echo "Migrating.."
-	uv run alembic -c migrations/alembic.ini upgrade head
+	uv run alembic -c alembic/alembic.ini upgrade head
 
 lint:
 	uv tool run black ./

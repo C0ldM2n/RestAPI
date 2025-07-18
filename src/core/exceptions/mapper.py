@@ -3,7 +3,7 @@ import re
 from core.exceptions import (
     AlreadyExistOnThisLevelError,
     SelfParentError,
-    ForeignKeyConstraintViolationError
+    ForeignKeyConstraintViolationError,
 )
 
 MAPPINGS = [
@@ -13,15 +13,13 @@ MAPPINGS = [
         lambda detail: {
             "field": detail.split("Key (")[1].split(",")[0],
             "data": detail.split("=(")[1].split(",")[0],
-            "detail": detail
+            "detail": detail,
         },
     ),
     (
         re.compile(r"id_not_parent"),
         SelfParentError,
-        lambda detail: {
-            "detail": detail
-        },
+        lambda detail: {"detail": detail},
     ),
     (
         re.compile(r"not present"),
@@ -29,7 +27,7 @@ MAPPINGS = [
         lambda detail: {
             "field": detail.split("Key (")[1].split(")")[0],
             "data": detail.split("=(")[1].split(")")[0],
-            "detail": detail
+            "detail": detail,
         },
     ),
 ]

@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field, conlist
+from pydantic import BaseModel, Field
 
 
 class Response(BaseModel):
@@ -29,4 +29,4 @@ class ErrorResponse(BaseModel):
 class ErrorResponseMulti(BaseModel):
     """The public error response model that includes multiple objects."""
 
-    errors: conlist(ErrorResponse, min_length=1)
+    errors: list[ErrorResponse] = Field(..., min_items=1)

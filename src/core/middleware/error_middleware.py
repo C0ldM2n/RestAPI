@@ -30,11 +30,15 @@ class ErrorMiddleware(BaseHTTPMiddleware):
                 for e in err.errors()
             ]
             payload = ErrorResponseMulti(errors=errs).model_dump(by_alias=True)
-            return JSONResponse(payload, status_code=status.HTTP_422_UNPROCESSABLE_ENTITY)
+            return JSONResponse(
+                payload, status_code=status.HTTP_422_UNPROCESSABLE_ENTITY
+            )
 
         except Exception:
-            traceback.print_exc()
+            # traceback.print_exc()
             generic = ErrorResponseMulti(
                 errors=[ErrorResponse(message="Internal Server Error")]
             ).model_dump(by_alias=True)
-            return JSONResponse(generic, status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return JSONResponse(
+                generic, status_code=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
