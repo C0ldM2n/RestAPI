@@ -18,7 +18,11 @@ def convert_db_errors():
                 result = await func(self, *args, **kwargs)
 
                 if result is None:
-                    pk = args[0] if not isinstance(args[0], dict) else args[0]["id"]
+                    pk = (
+                        args[0]
+                        if not isinstance(args[0], dict)
+                        else args[0]["id"]
+                    )
                     detail = "Result = None. Entity not found."
                     raise NotFoundError(pk=pk, detail=detail)
 
@@ -37,7 +41,7 @@ def convert_db_errors():
                 await self._session.rollback()
                 if isinstance(e, NotFoundError):
                     raise
-                print(traceback.format_exc())
+                # print(traceback.format_exc())
                 raise DatabaseError(detail=detail)
 
         return wrapper

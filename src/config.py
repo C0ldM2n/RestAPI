@@ -7,9 +7,11 @@ class Settings(BaseSettings):
     APP_NAME: str = "REST API"
     VERSION: str = "0.1.0"
 
-    DEBUG: bool = True
+    DEBUG: bool = False
+    LOG_LEVEL: str = "INFO"
+    LOG_PATH: Path = Path("./logs/")
 
-    ROOT_PATH: str = "/src/"
+    ROOT_PATH: str = "./src/"
     BASE_DIR: str = str(Path(__file__).resolve().parent.parent)
     TCP_PORT: int = 8000
 
