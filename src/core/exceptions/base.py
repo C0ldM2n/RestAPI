@@ -28,13 +28,11 @@ class BaseError(Exception):
 
 
 class NotFoundError(BaseError):
-    def __init__(
-        self, *_: tuple[Any], pk: int | UUID, detail: str = None
-    ) -> None:
+    def __init__(self, *_: tuple[Any], pk: int | UUID) -> None:
         super().__init__(
             message=f"Entity with id {pk} not found.",
             status_code=HTTP_404_NOT_FOUND,
-            detail=detail or {},
+            detail="Result = None. Entity not found.",
         )
 
 
@@ -43,7 +41,9 @@ class AlreadyExistOnThisLevelError(BaseError):
         self, *_: tuple[Any], field: str, data: str | int, detail: str = None
     ) -> None:
         super().__init__(
-            message=f"Entity with {field} '{data}' on this level already exists.",
+            message=(
+                f"Entity with {field} '{data}' on this level already exists."
+            ),
             status_code=HTTP_409_CONFLICT,
             detail=detail or {},
         )
@@ -61,27 +61,30 @@ class ForeignKeyConstraintViolationError(BaseError):
 
 
 class SelfParentError(BaseError):
-    def __init__(self, *_: tuple[Any], detail: str = None) -> None:
+    def __init__(self, *_: tuple[Any]) -> None:
         super().__init__(
-            message=f"Entity can't be it's own parent.",
+            message="Entity can't be it's own parent.",
             status_code=HTTP_422_UNPROCESSABLE_ENTITY,
-            detail=detail or {},
+            detail="Parent ID cannot be the same as the entity's ID.",
         )
 
 
 class CyclicReferenceError(BaseError):
-    def __init__(self, *_: tuple[Any], detail: str = None) -> None:
+    def __init__(self, *_: tuple[Any]) -> None:
         super().__init__(
-            message=f"Entity can't be it's own child.",
+            message="Entity can't be it's own child.",
             status_code=HTTP_422_UNPROCESSABLE_ENTITY,
-            detail=detail or {},
+            detail=(
+                "Entity cannot be assigned as a parent to itself, "
+                "either directly or through a chain of relationships."
+            ),
         )
 
 
 class DatabaseError(BaseError):
     def __init__(self, *_: tuple[Any], detail: str = None) -> None:
         super().__init__(
-            message=f"Database error.",
+            message="Database error.",
             status_code=HTTP_500_INTERNAL_SERVER_ERROR,
             detail=detail or {},
         )

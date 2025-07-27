@@ -9,7 +9,9 @@ from sqlalchemy.ext.asyncio import (
 from config import settings
 
 engine = create_async_engine(
-    settings.db_url, echo=True if settings.DEBUG else False
+    settings.db_url,
+    echo="debug" if settings.DEBUG else False,
+    # max_overflow=10,
 )
 session_maker = async_sessionmaker(engine, expire_on_commit=False)
 

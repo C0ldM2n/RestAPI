@@ -7,17 +7,17 @@
 - [x] Exceptions mapper
 - [x] Exceptions middleware
 - [x] Naming of constraints in models + migrate
-- [ ] Check cycle reference (PUT)
+- [x] Check cycle reference (PUT)
 
 ### Routers, terminal and other
 
 - [ ] Router factory
-- [ ] Add logging
+- [x] Add logging
 - [ ] Fix CLI
 
 - [x] Handling internal server exception right
 - [ ] Document all errors
-- [ ] Document database connect error
+- [x] Document database connect error
 - [ ] Docstrings
 
 ### Authorization

@@ -1,9 +1,9 @@
 from sqlalchemy import select
 from sqlalchemy.orm import aliased
 from sqlalchemy.ext.asyncio import AsyncSession
-from fastapi import HTTPException
 
 from core.db.repository import Model, ID
+from core.exceptions.base import CyclicReferenceError, SelfParentError
 
 
 async def ensure_no_cycle(
@@ -16,10 +16,7 @@ async def ensure_no_cycle(
         return
 
     if object_id == new_parent_id:
-        raise HTTPException(
-            status_code=400,
-            detail="Object cannot be as own parent.",
-        )
+        raise SelfParentError
 
     ancestor = aliased(model)
 
@@ -41,7 +38,4 @@ async def ensure_no_cycle(
 
     result = await session.execute(query)
     if result.scalar_one_or_none() is not None:
-        raise HTTPException(
-            status_code=400,
-            detail="Cycle reference: item cannot be as own children.",
-        )
+        raise CyclicReferenceError

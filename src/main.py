@@ -1,5 +1,3 @@
-import logging
-
 from fastapi import FastAPI
 
 from config import settings
@@ -11,9 +9,6 @@ setup_logger()
 
 app = FastAPI(title=settings.APP_NAME)
 
-# SQLAlchemy logging
-# logging.basicConfig()
-# logging.getLogger("sqlalchemy.engine").setLevel(logging.INFO)
 
 app.add_middleware(ErrorMiddleware)
 
