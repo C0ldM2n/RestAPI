@@ -1,19 +1,27 @@
+from typing import get_args
+from functools import cached_property
+
 from pydantic import BaseModel
 from sqlalchemy import delete
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from core.db.repository import Model, ID
 from core.db.repository.interfaces import IRepository
-from core.db.repository.error_converter import convert_db_errors
-from core.utils.cycle_checker import ensure_no_cycle
 
 
 class BaseRepository(IRepository[Model, ID]):
-    def __init__(self, model: type[Model], session: AsyncSession):
-        self._model = model
+    def __init__(
+        self,
+        session: AsyncSession,
+    ):
         self._session = session
 
-    @convert_db_errors()
+    @cached_property
+    def _model(self) -> type[Model]:
+        """Automatically determines the SQLAlchemy model via Generic type."""
+        generic_base = self.__class__.__orig_bases__[0]
+        return get_args(generic_base)[0]
+
     async def create(self, data: BaseModel) -> Model:
         payload = data.model_dump()
         instance = self._model(**payload)
@@ -22,23 +30,13 @@ class BaseRepository(IRepository[Model, ID]):
         await self._session.refresh(instance)
         return instance
 
-    @convert_db_errors()
     async def read(self, pk: ID) -> Model:
         obj = await self._session.get(self._model, pk)
         return obj
 
-    @convert_db_errors()
     async def update(self, pk: ID, data: BaseModel) -> Model:
         payload = data.model_dump()
         obj = await self._session.get(self._model, pk)
-
-        if "parent_id" in payload:
-            await ensure_no_cycle(
-                session=self._session,
-                model=self._model,
-                object_id=pk,
-                new_parent_id=payload["parent_id"],
-            )
 
         for field, value in payload.items():
             setattr(obj, field, value)

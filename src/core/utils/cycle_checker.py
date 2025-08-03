@@ -11,11 +11,13 @@ async def ensure_no_cycle(
     model: type[Model],
     object_id: ID,
     new_parent_id: ID,
-):
+) -> None:
+    """Checking for an inherited cycle in a table."""
+
     if new_parent_id is None:
         return
 
-    if object_id == new_parent_id:
+    elif object_id == new_parent_id:
         raise SelfParentError
 
     ancestor = aliased(model)
@@ -37,5 +39,6 @@ async def ensure_no_cycle(
     query = select(cte.c.id).where(cte.c.id == object_id)
 
     result = await session.execute(query)
+
     if result.scalar_one_or_none() is not None:
         raise CyclicReferenceError

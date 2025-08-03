@@ -161,3 +161,6 @@ database!/.env.test
 !/.env.test
 .DS_Store
 *.code-workspace
+/logs/*
+*/logs/*
+db-cheatsheet.md

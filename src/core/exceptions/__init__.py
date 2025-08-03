@@ -1,7 +1,7 @@
 from .base import (
     NotFoundError,
-    AlreadyExistOnThisLevelError,
-    ForeignKeyConstraintViolationError,
+    AlreadyExistsError,
+    ForeignKeyViolationError,
     SelfParentError,
     CyclicReferenceError,
     DatabaseError,
@@ -9,8 +9,8 @@ from .base import (
 
 __all__ = [
     "NotFoundError",
-    "AlreadyExistOnThisLevelError",
-    "ForeignKeyConstraintViolationError",
+    "AlreadyExistsError",
+    "ForeignKeyViolationError",
     "SelfParentError",
     "CyclicReferenceError",
     "DatabaseError",

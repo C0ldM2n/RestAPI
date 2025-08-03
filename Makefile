@@ -26,11 +26,11 @@ tests:
 
 create-revision:
 	@echo "Creating revision.."
-	uv run alembic -c alembic/alembic.ini revision --autogenerate
+	uv run alembic revision --autogenerate
 
 migrate-head:
 	@echo "Migrating.."
-	uv run alembic -c alembic/alembic.ini upgrade head
+	uv run alembic upgrade head
 
 lint:
 	uv tool run black ./

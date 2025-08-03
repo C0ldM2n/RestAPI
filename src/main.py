@@ -1,15 +1,26 @@
+from contextlib import asynccontextmanager
+
 from fastapi import FastAPI
 
+from core.db import database
 from config import settings
 from core.logger import setup_logger
-from core.middleware.error_middleware import ErrorMiddleware
+from core.exceptions.handler import setup_exception_handlers
 from products.categories.routers import router as router_categories
 
 setup_logger()
 
-app = FastAPI(title=settings.APP_NAME)
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    await database.connect()
+
+    yield
+
+    await database.disconnect()
 
 
-app.add_middleware(ErrorMiddleware)
+app = FastAPI(title=settings.APP_NAME, lifespan=lifespan)
 
+setup_exception_handlers(app)
 app.include_router(router_categories)

@@ -70,9 +70,9 @@ async def db_session(
 def test_app(db_session: AsyncSession) -> FastAPI:
     """Create a test app with overridden dependencies."""
     from main import app
-    from core.db.database import get_async_session
+    from core.dependencies import get_session
 
-    app.dependency_overrides[get_async_session] = lambda: db_session
+    app.dependency_overrides[get_session] = lambda: db_session
     return app
 
 

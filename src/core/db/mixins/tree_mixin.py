@@ -1,4 +1,4 @@
-from sqlalchemy import ForeignKey, Integer
+from sqlalchemy import ForeignKey
 from sqlalchemy.orm import (
     declared_attr,
     mapped_column,
@@ -17,9 +17,8 @@ class TreeMixin(SortMixin):
     __tablename__: str
 
     @declared_attr
-    def parent_id(cls) -> Mapped[int]:
+    def parent_id(cls) -> Mapped[int | None]:
         return mapped_column(
-            Integer,
             ForeignKey(f"{cls.__tablename__}.id", ondelete="CASCADE"),
             nullable=True,
             index=True,

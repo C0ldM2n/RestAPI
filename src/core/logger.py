@@ -35,7 +35,11 @@ class InterceptHandler(logging.Handler):
 
 
 def setup_logger(
-    file_path: Path | None = settings.LOG_PATH / "{time}.log",
+    file_path: Path | None = (
+        settings.LOG_PATH / "{time}.log"
+        if settings.LOG_PATH is not None
+        else None
+    ),
     *,
     level: Union[str, int] = "DEBUG" if settings.DEBUG else settings.LOG_LEVEL,
     log_format: str = LOG_FORMAT,
@@ -46,6 +50,7 @@ def setup_logger(
     diagnose: bool = True,
 ):
     """Configuration Loguru for integration with logging."""
+
     logger.remove()
     intercept_handler = InterceptHandler()
     if file_path:

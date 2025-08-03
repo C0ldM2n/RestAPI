@@ -1,6 +1,6 @@
-## TODO List
+# REST API
 
-- [ ] **SOLID**
+## TODO List
 
 ### Exceptions
 
@@ -11,21 +11,28 @@
 
 ### Routers, terminal and other
 
-- [ ] Router factory
 - [x] Add logging
-- [ ] Fix CLI
+- [ ] Improve CLI module
 
 - [x] Handling internal server exception right
-- [ ] Document all errors
 - [x] Document database connect error
-- [ ] Docstrings
+- [x] Comments
 
-### Authorization
+- [x] Remove repository factory
+- [x] Hierarchical repository
+- [ ] Improve repository (batch, get all, think about pagination)
 
-- [ ] JWT generation
-- [ ] JWT checking
-- [ ] Requests authorization requirements
+- [x] Migrations before startup
+- [x] Class for creating sqlalchemy engine and sessionmaker (+lifespan in main)
+- [x] Better error message
+
+- [x] Test order of handlers
+
+- [x] Remove exception middleware
+- [x] Handler for integrity errors
+- [ ] Does we need to log requests?
 
 - [ ] Exception details (show only required data)
+- [ ] Document all errors (in swagger)
 - [ ] Docker
 - [ ] Tests

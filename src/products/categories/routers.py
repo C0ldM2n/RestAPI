@@ -1,18 +1,21 @@
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, status, Path
+from fastapi import APIRouter, status, Path
 
-from core.db.repository.repository_factory import RepositoryFactory
-from models import Category
 from products.categories.schemas import (
     CategoryCreateSchema,
     CategoryUpdateSchema,
     CategoryResponseSchema,
 )
+from products.categories.dependencies import (
+    CategoryFromPath,
+    CategoryRepositoryDep,
+)
+
 
 router = APIRouter(prefix="/categories", tags=["Categories"])
 
-CategoryID = Annotated[int, Path(..., alias="id")]
+CategoryID = Annotated[int, Path(..., alias="id", gt=0)]
 
 
 @router.post(
@@ -22,10 +25,9 @@ CategoryID = Annotated[int, Path(..., alias="id")]
 )
 async def create_category(
     data: CategoryCreateSchema,
-    factory: RepositoryFactory = Depends(RepositoryFactory),
+    repository: CategoryRepositoryDep,
 ):
-    repo = factory(Category)
-    new_category = await repo.create(data)
+    new_category = await repository.create(data)
     return new_category
 
 
@@ -35,11 +37,8 @@ async def create_category(
     status_code=status.HTTP_200_OK,
 )
 async def read_category(
-    category_id: CategoryID,
-    factory: RepositoryFactory = Depends(RepositoryFactory),
+    category: CategoryFromPath,
 ):
-    repo = factory(Category)
-    category = await repo.read(category_id)
     return category
 
 
@@ -49,20 +48,18 @@ async def read_category(
     status_code=status.HTTP_200_OK,
 )
 async def update_category(
-    category_id: CategoryID,
+    category: CategoryFromPath,
     data: CategoryUpdateSchema,
-    factory: RepositoryFactory = Depends(RepositoryFactory),
+    repository: CategoryRepositoryDep,
 ):
-    repo = factory(Category)
-    updated_category = await repo.update(category_id, data)
+    updated_category = await repository.update(category.id, data)
     return updated_category
 
 
 @router.delete("/{id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_category(
     category_id: CategoryID,
-    factory: RepositoryFactory = Depends(RepositoryFactory),
+    reposotory: CategoryRepositoryDep,
 ):
-    repo = factory(Category)
-    await repo.delete(category_id)
-    return
+    await reposotory.delete(category_id)
+    return None

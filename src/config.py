@@ -3,13 +3,13 @@ from pathlib import Path
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
-class Settings(BaseSettings):
+class Config(BaseSettings):
     APP_NAME: str = "REST API"
     VERSION: str = "0.1.0"
 
     DEBUG: bool = False
     LOG_LEVEL: str = "INFO"
-    LOG_PATH: Path = Path("./logs/")
+    LOG_PATH: Path | None = None
 
     ROOT_PATH: str = "./src/"
     BASE_DIR: str = str(Path(__file__).resolve().parent.parent)
@@ -33,4 +33,4 @@ class Settings(BaseSettings):
         )
 
 
-settings = Settings()
+settings = Config()

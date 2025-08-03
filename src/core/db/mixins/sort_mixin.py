@@ -1,5 +1,8 @@
-from sqlalchemy import Integer
-from sqlalchemy.orm import declarative_mixin, declared_attr, mapped_column, Mapped
+from sqlalchemy.orm import (
+    declarative_mixin,
+    mapped_column,
+    Mapped,
+)
 
 
 # noinspection PyMethodParameters
@@ -7,6 +10,4 @@ from sqlalchemy.orm import declarative_mixin, declared_attr, mapped_column, Mapp
 class SortMixin:
     """Mixin class to represent a sortable model."""
 
-    @declared_attr
-    def sort_order(cls) -> Mapped[int]:
-        return mapped_column(Integer, nullable=False)
+    sort_order: Mapped[int] = mapped_column(nullable=False)

@@ -10,7 +10,7 @@ from sqlalchemy.orm import session
 from sqlalchemy.ext.asyncio import AsyncSession
 
 import models
-from core.db.database import get_async_session
+from core.dependencies import get_session
 
 
 # @pytest.mark.asyncio
