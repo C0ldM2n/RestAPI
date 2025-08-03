@@ -31,6 +31,7 @@
 - [x] Remove exception middleware
 - [x] Handler for integrity errors
 - [ ] Does we need to log requests?
+- [ ] Router factory
 
 - [ ] Exception details (show only required data)
 - [ ] Document all errors (in swagger)
