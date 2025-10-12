@@ -1,8 +1,8 @@
 from sqlalchemy import DateTime, func
 from sqlalchemy.orm import (
+    Mapped,
     declarative_mixin,
     mapped_column,
-    Mapped,
 )
 
 

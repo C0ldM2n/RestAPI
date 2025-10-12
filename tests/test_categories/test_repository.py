@@ -3,9 +3,8 @@ from pathlib import Path
 
 import pytest
 
-from products.categories.schemas import CategoryCreateSchema
 from products.categories.repository import CategoryRepository
-
+from products.categories.schemas import CategoryCreateSchema
 
 # CategoryID = Annotated[int, Path(..., alias="id")]
 # CategoryRepo = Annotated[CategoryRepository, Depends(get_category_repository)]
@@ -15,7 +14,7 @@ def load_category_data(
     filename: str = "./fake_data/categories.json",
 ) -> CategoryCreateSchema:
     """Loads category data from a JSON file."""
-    with open(Path(__file__).parent / filename, "r") as file:
+    with open(Path(__file__).parent / filename) as file:
         data = json.load(file)
     # Convert each dictionary to a CategoryCreate instance
 

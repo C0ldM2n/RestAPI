@@ -6,17 +6,15 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from core.db import BaseModel
 
 if typing.TYPE_CHECKING:
-    from products.products.models import Product
     from products.countries.models import Country
+    from products.products.models import Product
 
 
 class Brand(BaseModel):
     __tablename__ = "brands"
 
     # Define brand columns
-    id: Mapped[int] = mapped_column(
-        primary_key=True, index=True, nullable=False
-    )
+    id: Mapped[int] = mapped_column(primary_key=True, index=True, nullable=False)
 
     country_registration_id: Mapped[int | None] = mapped_column(
         ForeignKey("countries.id"), nullable=True

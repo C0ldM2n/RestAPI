@@ -34,6 +34,9 @@ Upgrading to head revision
     make lint
 Linter project
 
+    make lint-fix
+Try to use ruff for fix some problems
+
 #### DB cli commands
 
     make db-create

@@ -1,9 +1,9 @@
-from abc import ABC, abstractmethod, ABCMeta
+from abc import ABC, ABCMeta, abstractmethod
 from typing import Generic
 
 from pydantic import BaseModel
 
-from core.db.repository import Model, ID
+from core.db.repository import ID, Model
 
 
 class ICreate(ABC, Generic[Model]):

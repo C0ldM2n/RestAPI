@@ -1,12 +1,12 @@
 from typing import TYPE_CHECKING
 
 from sqlalchemy import (
-    UniqueConstraint,
     CheckConstraint,
+    UniqueConstraint,
 )
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from core.db import BaseModel, TreeMixin, TimestampMixin
+from core.db import BaseModel, TimestampMixin, TreeMixin
 
 if TYPE_CHECKING:
     from products.products.models import Product
@@ -29,9 +29,7 @@ class Category(BaseModel, TreeMixin, TimestampMixin):
 
     # Unique constraints for table
     __table_args__ = (
-        CheckConstraint(
-            "id != parent_id", name="ck_categories_id_parent_id_not_self"
-        ),
+        CheckConstraint("id != parent_id", name="ck_categories_id_parent_id_not_self"),
         UniqueConstraint("name", "parent_id", name="uq_categories_name_level"),
         UniqueConstraint(
             "sort_order", "parent_id", name="uq_categories_sort_order_level"

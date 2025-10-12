@@ -4,12 +4,12 @@ from pathlib import Path
 import typer
 
 from core.cli.utils import (
-    bulk_insert_data_from_files,
-    bulk_insert_base_jsons,
     bulk_insert_all_jsons,
+    bulk_insert_base_jsons,
+    bulk_insert_data_from_files,
     create_database,
-    drop_database,
     create_tables,
+    drop_database,
 )
 
 app = typer.Typer()
@@ -19,7 +19,7 @@ app = typer.Typer()
 def bulk_insert(
     files: list[Path] = typer.Argument(
         ..., help="Paths to JSON files for bulk insertion."
-    )
+    ),
 ):
     """Bulk insert data into tables from specified JSON files."""
     try:

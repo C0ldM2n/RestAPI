@@ -12,9 +12,7 @@ class Country(BaseModel, TimestampMixin):
     __tablename__ = "countries"
 
     # Define country columns
-    id: Mapped[int] = mapped_column(
-        primary_key=True, index=True, nullable=False
-    )
+    id: Mapped[int] = mapped_column(primary_key=True, index=True, nullable=False)
 
     name: Mapped[str]
 

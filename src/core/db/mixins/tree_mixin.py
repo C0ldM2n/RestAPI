@@ -1,9 +1,9 @@
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import (
+    Mapped,
+    declarative_mixin,
     declared_attr,
     mapped_column,
-    declarative_mixin,
-    Mapped,
 )
 
 from core.db.mixins.sort_mixin import SortMixin

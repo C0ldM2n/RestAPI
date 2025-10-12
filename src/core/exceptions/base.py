@@ -31,9 +31,7 @@ class NotFoundError(BaseError):
     code = ErrorCode.ENTITY_NOT_FOUND
 
     def __init__(self, entity_name: str, pk: int | UUID):
-        super().__init__(
-            message=f"Entity '{entity_name}' with ID '{pk}' not found."
-        )
+        super().__init__(message=f"Entity '{entity_name}' with ID '{pk}' not found.")
 
 
 class AlreadyExistsError(BaseError):
@@ -74,7 +72,9 @@ class CyclicReferenceError(BaseError):
 
     status_code = status.HTTP_422_UNPROCESSABLE_ENTITY
     code = ErrorCode.CYCLIC_DEPENDENCY_ERROR
-    message = "Cyclical dependency has been detected: you cannot make a parent a child element."
+    message = (
+        "Cyclical dependency has been detected: you cannot make a parent a child element."
+    )
 
     def __init__(self):
         super().__init__(path=["parent_id"])

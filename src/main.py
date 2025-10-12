@@ -2,10 +2,10 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 
-from core.db import database
 from config import settings
-from core.logger import setup_logger
+from core.db import database
 from core.exceptions.handler import setup_exception_handlers
+from core.logger import setup_logger
 from products.categories.routers import router as router_categories
 
 setup_logger()

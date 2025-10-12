@@ -1,5 +1,5 @@
-from products.categories.models import Category
 from core.db.repository.hierarchical_repository import HierarchicalRepository
+from products.categories.models import Category
 
 
 class CategoryRepository(HierarchicalRepository[Category, int]):

@@ -1,18 +1,15 @@
-import os
-import sys
 import asyncio
 import logging
+import os
+import sys
 
+from alembic import context
+from loguru import logger
 from sqlalchemy import pool
 from sqlalchemy.engine import Connection
 from sqlalchemy.ext.asyncio import async_engine_from_config
 
-from alembic import context
-from loguru import logger
-
-sys.path.append(
-    os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "src"))
-)
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "src")))
 
 from core.logger import InterceptHandler
 

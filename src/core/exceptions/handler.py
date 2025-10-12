@@ -1,12 +1,12 @@
 from fastapi import FastAPI, Request
-from fastapi.responses import JSONResponse
 from fastapi.exceptions import RequestValidationError
+from fastapi.responses import JSONResponse
 from loguru import logger
-from starlette import status
 from sqlalchemy.exc import IntegrityError
+from starlette import status
 
-from core.exceptions.mapper import MAPPINGS
 from core.exceptions.base import BaseError, DatabaseError
+from core.exceptions.mapper import MAPPINGS
 from core.exceptions.schemas import ApiError, ApiErrorResponse, ErrorCode
 
 

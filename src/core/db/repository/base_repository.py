@@ -1,11 +1,11 @@
-from typing import get_args
 from functools import cached_property
+from typing import get_args
 
 from pydantic import BaseModel
 from sqlalchemy import delete
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from core.db.repository import Model, ID
+from core.db.repository import ID, Model
 from core.db.repository.interfaces import IRepository
 
 

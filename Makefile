@@ -5,7 +5,7 @@ endif
 
 export PYTHONPATH := src
 
-.PHONY: setup create-requirements start tests create-revision migrate-head lint db-create db-drop db-tables db-all db-base
+.PHONY: setup create-requirements start tests create-revision migrate-head lint lint-fix db-create db-drop db-tables db-all db-base
 
 setup:
 	@echo "Setting up virtual environment.."
@@ -33,7 +33,14 @@ migrate-head:
 	uv run alembic upgrade head
 
 lint:
-	uv tool run ruff check ./
+	uv tool run ruff check ./src
+	uv tool run ruff check ./tests
+	uv tool run ruff format ./tests
+	uv tool run ruff format ./tests
+
+lint-fix:
+	uv tool run ruff check ./src --fix
+	uv tool run ruff check ./tests --fix
 
 # DB commands
 db-create:

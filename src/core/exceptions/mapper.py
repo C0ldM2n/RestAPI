@@ -1,8 +1,8 @@
 import re
 
 from core.exceptions import (
-    ForeignKeyViolationError,
     AlreadyExistsError,
+    ForeignKeyViolationError,
 )
 
 
@@ -17,9 +17,7 @@ def _parse_unique_violation(detail: str):
         table_name = table_match.group(1)
     else:
         # Method 2: If that doesn't work, parse the name of the constraint
-        constraint_match = re.search(
-            r'violates unique constraint "(.*?)"', detail
-        )
+        constraint_match = re.search(r'violates unique constraint "(.*?)"', detail)
         if constraint_match:
             constraint_name = constraint_match.group(1)
             # We expect the convention ‘uq_tablename_fields’ or ‘tablename_..._key’
@@ -49,9 +47,7 @@ def _parse_unique_violation(detail: str):
 
 def _parse_foreign_key_violation(detail: str):
     """Parsing error FOREIGN KEY constraint."""
-    match = re.search(
-        r'Key \((.*?)\)=\((.*?)\) is not present in table "(.*?)".', detail
-    )
+    match = re.search(r'Key \((.*?)\)=\((.*?)\) is not present in table "(.*?)".', detail)
     if not match:
         return None
 

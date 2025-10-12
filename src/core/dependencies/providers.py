@@ -1,9 +1,10 @@
-from typing import Callable, Annotated
+from collections.abc import Callable
+from typing import Annotated
 
 from fastapi import Depends, Path
 
+from core.db.repository import ID, Model
 from core.db.repository.interfaces import IRepository
-from core.db.repository import Model, ID
 from core.exceptions.base import NotFoundError
 
 

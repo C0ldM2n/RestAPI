@@ -1,16 +1,6 @@
-import json
-from pathlib import Path
-from http.client import responses
 
-import pytest
 
-from fastapi import status
-from httpx import AsyncClient
-from sqlalchemy.orm import session
-from sqlalchemy.ext.asyncio import AsyncSession
 
-import models
-from core.dependencies import get_session
 
 
 # @pytest.mark.asyncio

@@ -1,7 +1,6 @@
-import sys
 import logging
 from pathlib import Path
-from typing import Union
+import sys
 
 from loguru import logger
 
@@ -29,19 +28,15 @@ class InterceptHandler(logging.Handler):
             frame = frame.f_back
             depth += 1
 
-        logger.opt(depth=depth, exception=record.exc_info).log(
-            level, record.getMessage()
-        )
+        logger.opt(depth=depth, exception=record.exc_info).log(level, record.getMessage())
 
 
 def setup_logger(
     file_path: Path | None = (
-        settings.LOG_PATH / "{time}.log"
-        if settings.LOG_PATH is not None
-        else None
+        settings.LOG_PATH / "{time}.log" if settings.LOG_PATH is not None else None
     ),
     *,
-    level: Union[str, int] = "DEBUG" if settings.DEBUG else settings.LOG_LEVEL,
+    level: str | int = "DEBUG" if settings.DEBUG else settings.LOG_LEVEL,
     log_format: str = LOG_FORMAT,
     rotation: str = "03:00",
     retention: str = "7 days",

@@ -1,17 +1,16 @@
 from typing import Annotated
 
-from fastapi import APIRouter, status, Path
+from fastapi import APIRouter, Path, status
 
-from products.categories.schemas import (
-    CategoryCreateSchema,
-    CategoryUpdateSchema,
-    CategoryResponseSchema,
-)
 from products.categories.dependencies import (
     CategoryFromPath,
     CategoryRepositoryDep,
 )
-
+from products.categories.schemas import (
+    CategoryCreateSchema,
+    CategoryResponseSchema,
+    CategoryUpdateSchema,
+)
 
 router = APIRouter(prefix="/categories", tags=["Categories"])
 

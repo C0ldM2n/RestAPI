@@ -1,8 +1,8 @@
 from sqlalchemy import select
-from sqlalchemy.orm import aliased
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import aliased
 
-from core.db.repository import Model, ID
+from core.db.repository import ID, Model
 from core.exceptions.base import CyclicReferenceError, SelfParentError
 
 

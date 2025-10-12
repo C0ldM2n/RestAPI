@@ -1,17 +1,15 @@
-import contextlib
 from collections.abc import AsyncGenerator
 from pathlib import Path
 
+from fastapi import FastAPI
+from httpx import ASGITransport, AsyncClient
 import pytest
 import pytest_asyncio
-from fastapi import FastAPI
-from httpx import AsyncClient, ASGITransport
 from sqlalchemy.ext.asyncio import (
     AsyncSession,
     async_sessionmaker,
     create_async_engine,
 )
-from sqlalchemy import text
 
 import config as conf
 from config import Settings
@@ -69,8 +67,8 @@ async def db_session(
 @pytest.fixture()
 def test_app(db_session: AsyncSession) -> FastAPI:
     """Create a test app with overridden dependencies."""
-    from main import app
     from core.dependencies import get_session
+    from main import app
 
     app.dependency_overrides[get_session] = lambda: db_session
     return app
