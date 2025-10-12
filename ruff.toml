@@ -1,0 +1,74 @@
+# -------------------------
+# Project-wide settings
+# -------------------------
+line-length = 90         # Max line length for linter and formatter
+target-version = "py312" # Target Python version
+src = ["src", "app"]     # Source roots to resolve first-party imports
+
+# -------------------------
+# Linter (rule selection)
+# -------------------------
+[lint]
+# Core rule sets:
+# E = pycodestyle (non-stylistic), F = pyflakes, B = bugbear, I = isort,
+# UP = pyupgrade, S = bandit, C90 = mccabe, N = pep8-naming, ANN = annotations
+select = ["E", "F", "B", "I", "UP", "S", "C90", "N", "ANN"]
+# Keep line-length checks off (formatter governs wrapping).
+ignore = ["E501"]
+# Extra value adds (Ruff-specific rules):
+extend-select = ["RUF100"] # Remove unused `# noqa` automatically
+
+# Per-file relaxations for conventional patterns
+[lint.per-file-ignores]
+# Allow re-export patterns in package initializers
+"**/__init__.py" = ["F401"]
+# Allow `assert` in tests without tripping Bandit
+"tests/**" = ["S101"]
+
+# McCabe complexity (cyclomatic complexity)
+[lint.mccabe]
+# Keep functions focused; exceeding this triggers C901
+max-complexity = 8
+
+# Bugbear tweaks (treat framework factory calls as "immutable" in defaults)
+[lint.flake8-bugbear]
+# Fully-qualified callables considered immutable in default args/dataclasses
+extend-immutable-calls = [
+    "fastapi.Depends",
+    "fastapi.Query",
+    "fastapi.Path",
+    "fastapi.Body",
+    "fastapi.Header",
+    "fastapi.Cookie",
+]
+
+# Annotations (ergonomics for gradual typing)
+[lint.flake8-annotations]
+# Permit omitting __init__ return hint if args annotated (mypy-compatible)
+mypy-init-return = true
+# Don’t require `self:` and `cls:` type hints
+# (Handled by your explicit ignores below.)
+
+# Import sorting (isort-compatible behavior within Ruff)
+[lint.isort]
+# Name your top-level packages here (module names, not folders)
+known-first-party = ["app"]
+combine-as-imports = true
+force-sort-within-sections = true
+
+# PyUpgrade (modernize syntax)
+[lint.pyupgrade]
+# Set to true only if your runtime depends on evaluated annotations
+# (e.g., legacy libs requiring runtime typing). Otherwise keep it false.
+keep-runtime-typing = false
+
+# -------------------------
+# Formatter (Black-compatible)
+# -------------------------
+[format]
+quote-style = "double"            # Prefer double quotes
+indent-style = "space"
+skip-magic-trailing-comma = false # Respect Black's "magic comma" behavior
+# Optional: auto-format code examples in docstrings (disabled by default)
+# docstring-code-format = true
+# docstring-code-line-length = "dynamic"

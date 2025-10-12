@@ -1,13 +1,13 @@
 import json
-from typing import Any
 from pathlib import Path
+from typing import Any
 
 from loguru import logger
 from sqlalchemy import insert, text
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 
-from core.db.database import engine, session_maker
 from config import settings
+from core.db.database import database
 from models import BaseModel
 from products.categories.models import Category
 
@@ -37,7 +37,7 @@ def get_table_model(table_name: str):
 
 async def load_json_file(file_path: Path) -> list[dict[str, Any]]:
     """Load JSON data from a file."""
-    with open(file_path, "r") as f:
+    with open(file_path) as f:
         data = f.read()
         return json.loads(data)
 
@@ -57,9 +57,7 @@ async def bulk_insert_data(
     await session.commit()
 
 
-async def bulk_insert_data_from_files(
-    files: list[Path], session: AsyncSession
-):
+async def bulk_insert_data_from_files(files: list[Path], session: AsyncSession):
     """Insert data into tables from multiple JSON files, sorted by priority."""
     file_data = []
 
@@ -80,7 +78,7 @@ async def bulk_insert_data_from_files(
 
 async def bulk_insert_base_jsons():
     """Bulk insert base data like brands and categories from the base JSON files."""
-    async with session_maker() as session:
+    async with database.get_session() as session:
         base_jsons = ["brands.json", "categories.json"]
         base_files = [
             Path("/".join([settings.BASE_DIR, "data", json_file]))
@@ -91,15 +89,13 @@ async def bulk_insert_base_jsons():
 
 async def bulk_insert_all_jsons():
     """Bulk insert all available JSON files from the data folder."""
-    async with session_maker() as session:
+    async with database.get_session() as session:
         data_folder = Path("/".join([settings.BASE_DIR, "data"]))
         json_files = list(data_folder.glob("*.json"))
         await bulk_insert_data_from_files(json_files, session)
 
 
 async def create_database():
-    from sqlite3 import ProgrammingError
-
     db = settings.db_url.rsplit("/", maxsplit=1)
     db_name = db[1]
     url = db[0] + "/postgres"
@@ -110,10 +106,11 @@ async def create_database():
         if not db_name.isidentifier():
             raise ValueError(f'Invalid database name: "{db_name}"')
         try:
-            logger.info(f'Creating database "{db_name}" {10 * '--'}')
+            logger.info(f'Creating database "{db_name}" {10 * "--"}')
             await conn.execute(text(f'CREATE DATABASE "{db_name}"'))
-        except ProgrammingError:
-            print(f'Database "{db_name}" already exists')
+        except Exception as e:
+            if "already exists" in str(e):
+                print(f'Database "{db_name}" already exists')
             return
     await engine_pg.dispose()
 
@@ -130,7 +127,7 @@ async def drop_database():
         from sqlite3 import ProgrammingError
 
         try:
-            logger.info(f'Drop database "{db_name}" {10 * '--'}')
+            logger.info(f'Drop database "{db_name}" {10 * "--"}')
             await conn.execute(text(f'DROP DATABASE "{db_name}" WITH (FORCE)'))
         except ProgrammingError:
             print(f'Database "{db_name}" not found')
@@ -139,7 +136,6 @@ async def drop_database():
 
 
 async def create_tables():
-    async with engine.begin() as conn:
+    async with database.engine.begin() as conn:
         await conn.run_sync(BaseModel.metadata.drop_all)
         await conn.run_sync(BaseModel.metadata.create_all)
-    await engine.dispose()

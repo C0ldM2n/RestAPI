@@ -24,6 +24,7 @@
 
 - [x] Migrations before startup
 - [x] Class for creating sqlalchemy engine and sessionmaker (+lifespan in main)
+- [x] Exception details (show only required data)
 - [x] Better error message
 
 - [x] Test order of handlers
@@ -33,7 +34,6 @@
 - [ ] Does we need to log requests?
 - [ ] Router factory
 
-- [ ] Exception details (show only required data)
 - [ ] Document all errors (in swagger)
 - [ ] Docker
 - [ ] Tests

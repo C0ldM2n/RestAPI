@@ -164,3 +164,5 @@ database!/.env.test
 /logs/*
 */logs/*
 db-cheatsheet.md
+/.vscode
+/.vscode/*

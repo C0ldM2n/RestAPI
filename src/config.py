@@ -5,21 +5,18 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 class Config(BaseSettings):
     APP_NAME: str = "REST API"
-    VERSION: str = "0.1.0"
+    VERSION: str = "0.4.0"
 
     DEBUG: bool = False
     LOG_LEVEL: str = "INFO"
-    LOG_PATH: Path | None = None
-
-    ROOT_PATH: str = "./src/"
+    LOG_PATH: Path = Path("./logs/")
     BASE_DIR: str = str(Path(__file__).resolve().parent.parent)
-    TCP_PORT: int = 8000
 
-    POSTGRES_HOST: str = ""
+    POSTGRES_HOST: str | None = None
     POSTGRES_PORT: str = "5432"
-    POSTGRES_DB: str = ""
-    POSTGRES_USER: str = ""
-    POSTGRES_PASSWORD: str = ""
+    POSTGRES_DB: str | None = None
+    POSTGRES_USER: str | None = None
+    POSTGRES_PASSWORD: str | None = None
 
     model_config = SettingsConfigDict(
         env_file=".env", env_file_encoding="utf-8", extra="allow"

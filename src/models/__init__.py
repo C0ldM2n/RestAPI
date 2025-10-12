@@ -1,5 +1,5 @@
 from core.db import BaseModel
-from products import Product, Brand, Category, Country
+from products import Brand, Category, Country, Product
 
 __all__ = [
     "BaseModel",

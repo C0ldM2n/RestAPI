@@ -19,8 +19,7 @@ class Database:
 
     def __init__(self, db_url: str, debug: bool):
         alembic_ini_path = (
-            Path(__file__).resolve().parent.parent.parent.parent
-            / "alembic.ini"
+            Path(__file__).resolve().parent.parent.parent.parent / "alembic.ini"
         )
 
         self._engine: AsyncEngine = create_async_engine(
@@ -28,11 +27,14 @@ class Database:
             echo="debug" if debug else False,
             # max_overflow=10
         )
-        self._SessionMaker = async_sessionmaker(
-            self._engine, expire_on_commit=False
-        )
+        self._SessionMaker = async_sessionmaker(self._engine, expire_on_commit=False)
 
         self._alembic_cfg = Config(str(alembic_ini_path))
+
+    @property
+    def engine(self) -> AsyncEngine:
+        """Expose the underlying engine for operations that need direct access."""
+        return self._engine
 
     @asynccontextmanager
     async def get_session(self) -> AsyncGenerator[AsyncSession, None]:
