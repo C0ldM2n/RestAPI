@@ -6,18 +6,13 @@ from loguru import logger
 
 from config import settings
 
-LOG_FORMAT = (
-    "<green>{time:YYYY-MM-DD HH:mm:ss:SSS}</green> | "
-    "<level>{level: <8}</level> | "
-    "<cyan>{name}</cyan>:<cyan>{function}</cyan>:<cyan>{line}</cyan> - "
-    "<level>{message}</level>"
-)
+LOG_FORMAT = "<green>{time:YYYY-MM-DD HH:mm:ss:SSS}</green> | <level>{level: <8}</level> | <cyan>{name}</cyan>:<cyan>{function}</cyan>:<cyan>{line}</cyan> - <level>{message}</level>"
 
 
 class InterceptHandler(logging.Handler):
     """Logging handler for intercepting standard logging messages."""
 
-    def emit(self, record):
+    def emit(self, record: logging.LogRecord) -> None:
         try:
             level = logger.level(record.levelname).name
         except ValueError:
@@ -32,20 +27,17 @@ class InterceptHandler(logging.Handler):
 
 
 def setup_logger(
-    file_path: Path | None = (
-        settings.LOG_PATH / "{time}.log" if settings.LOG_PATH is not None else None
-    ),
+    file_path: Path | None = settings.LOG_PATH / "{time}.log",
     *,
     level: str | int = "DEBUG" if settings.DEBUG else settings.LOG_LEVEL,
     log_format: str = LOG_FORMAT,
-    rotation: str = "03:00",
+    rotation: str = "02:00",
     retention: str = "7 days",
     compression: str = "zip",
     backtrace: bool = True,
     diagnose: bool = True,
-):
+) -> None:
     """Configuration Loguru for integration with logging."""
-
     logger.remove()
     intercept_handler = InterceptHandler()
     if file_path:

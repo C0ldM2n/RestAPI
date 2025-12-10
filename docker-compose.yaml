@@ -1,5 +1,5 @@
 services:
-  db:
+  database:
     image: postgres:16.9
     container_name: postgres_db
     ports:

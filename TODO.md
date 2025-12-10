@@ -37,3 +37,11 @@
 - [ ] Document all errors (in swagger)
 - [ ] Docker
 - [ ] Tests
+
+### Other
+
+- [ ] Improve logs
+- [ ] New endpoints
+- [ ] Improve sort_order field (trigger or some)
+- [ ] Update package versions
+- [ ] Update project python version 3.13

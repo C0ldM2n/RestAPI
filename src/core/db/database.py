@@ -2,7 +2,6 @@ from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
 from pathlib import Path
 
-from alembic import command
 from alembic.config import Config
 from sqlalchemy.ext.asyncio import (
     AsyncEngine,
@@ -54,13 +53,13 @@ class Database:
             await conn.run_sync(lambda _: None)
 
         # Doing migrations
-        async with self._engine.begin() as conn:
-
-            def _do_upgrade(sync_conn):
-                self._alembic_cfg.attributes["connection"] = sync_conn
-                command.upgrade(self._alembic_cfg, "head")
-
-            await conn.run_sync(_do_upgrade)
+        # async with self._engine.begin() as conn:
+        #
+        #     def _do_upgrade(sync_conn):
+        #         self._alembic_cfg.attributes["connection"] = sync_conn
+        #         command.upgrade(self._alembic_cfg, "head")
+        #
+        #     await conn.run_sync(_do_upgrade)
 
     async def disconnect(self) -> None:
         """Method for closing a connection to database."""

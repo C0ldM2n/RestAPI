@@ -17,8 +17,12 @@ create-requirements:
 	uv pip compile pyproject.toml -o requirements.txt
 
 start:
+	@echo "Migrating.."
+	uv run alembic upgrade head
 	@echo "Starting Uvicorn server (8001).."
 	uv run uvicorn src.main:app --reload --port 8001
+# 	macOS bug
+# 	PYTHONWARNINGS=ignore:resource_tracker:UserWarning uv run uvicorn src.main:app --reload --port 8001
 
 tests:
 	@echo "Running tests.."

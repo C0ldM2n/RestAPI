@@ -9,8 +9,11 @@ from sqlalchemy import pool
 from sqlalchemy.engine import Connection
 from sqlalchemy.ext.asyncio import async_engine_from_config
 
+from models import BaseModel
+
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "src")))
 
+from config import settings as app_config
 from core.logger import InterceptHandler
 
 logging.root.handlers = [InterceptHandler()]
@@ -18,8 +21,6 @@ logging.root.handlers = [InterceptHandler()]
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
 config = context.config
-
-from config import settings as app_config
 
 config.set_main_option("sqlalchemy.url", app_config.db_url)
 
@@ -32,19 +33,12 @@ config.set_main_option("sqlalchemy.url", app_config.db_url)
 # for 'autogenerate' support
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
-
-from models import BaseModel
-
 target_metadata = BaseModel.metadata
+
 for i in target_metadata.tables:
     logger.info(
         f"     - Table name: {i}",
     )
-
-# other values from the config, defined by the needs of env.py,
-# can be acquired:
-# my_important_option = config.get_main_option("my_important_option")
-# ... etc.
 
 
 def run_migrations_offline() -> None:
@@ -97,14 +91,12 @@ async def run_async_migrations() -> None:
 
 
 def run_migrations_online() -> None:
-    """Run migrations in 'online' mode."""
+    """Run migrations in 'online' mode.
 
-    connectable = config.attributes.get("connection", None)
-
-    if connectable is None:
-        asyncio.run(run_async_migrations())
-    else:
-        do_run_migrations(connectable)
+    In this scenario we need to create an Engine
+    and associate a connection with the context.
+    """
+    asyncio.run(run_async_migrations())
 
 
 if context.is_offline_mode():
