@@ -159,7 +159,8 @@ cython_debug/
 */.idea/*
 database!/.env.test
 !/.env.test
-.DS_Store
+**/.DS_Store
+**/._.DS_Store
 *.code-workspace
 /logs/*
 */logs/*
